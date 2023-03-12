@@ -104,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'authnapp.ShopUser' #при удалении возникнет ошибка в БД authnapp и файлы не будут загружаться
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
