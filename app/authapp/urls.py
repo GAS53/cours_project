@@ -1,12 +1,12 @@
 from django.urls import path
-from mainapp import views
-from django.views.generic import RedirectView
 
-app_name = 'authapp'
+import authnapp.views as authnapp
+
+app_name = "authnapp"
 
 urlpatterns = [
-    path("", RedirectView.as_view(url="index/")),
-    path("index/", views.Temp.as_view(), name="index"),
-
-
-    ]
+    path("login/", authnapp.login, name="login"),
+    path("logout/", authnapp.logout, name="logout"),
+    path("register/", authnapp.register, name="register"),
+    path("edit/", authnapp.edit, name="edit"),
+]
