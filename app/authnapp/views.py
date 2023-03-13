@@ -2,8 +2,23 @@ from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
+from .forms import ShopUserEditForm, ShopUserLoginForm, ShopUserRegisterForm
+from rest_framework.viewsets import ModelViewSet
+from .models import ShopUser
+from .serializers import ShopUserModelSerializer
+from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.views import APIView
 
-from authnapp.forms import ShopUserEditForm, ShopUserLoginForm, ShopUserRegisterForm
+
+class StaffOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff
+
+
+class ShopUserModelViewSet(ModelViewSet):
+
+    queryset = ShopUser.objects.all()
+    serializer_class = ShopUserModelSerializer
 
 
 def login(request):
