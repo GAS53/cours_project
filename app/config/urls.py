@@ -8,7 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", RedirectView.as_view(url="mainapp/")),
     path("mainapp/", include("mainapp.urls", namespace='mainapp')),
-    path("auth/", include("authapp.urls", namespace='auth')),
     path("apiapp/", include("apiapp.urls", namespace='apiapp')),
-    
+    path("authn/", include("authnapp.urls", namespace="auth")),
 ]
