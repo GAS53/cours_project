@@ -50,24 +50,11 @@ def register(request):
 
 def cabinet(request):
     title = "Кабинет"
+    
+    #тестовая
 
     name = request.user.username
 
     content = {"title": title, "name": name}
     return render(request, "authnapp/cabinet.html", content)
 
-
-
-def edit(request):
-    title = "редактирование"
-
-    if request.method == "POST":
-        edit_form = ShopUserEditForm(request.POST, request.FILES, instance=request.user)
-        if edit_form.is_valid():
-            edit_form.save()
-            return HttpResponseRedirect(reverse("auth:edit"))
-    else:
-        edit_form = ShopUserEditForm(instance=request.user)
-
-    content = {"title": title, "edit_form": edit_form, "media_url": settings.MEDIA_URL}
-    return render(request, "authnapp/edit.html", content)
