@@ -1,12 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-" все картинки загружаются в папку users_avatars. она создаётся авытоматически, но можно её переместить в другую папку, " \
-" например, в static/img, но тогда надо переписать путь:" \
+" все картинки загружаются в папку users_avatars. она создаётся авытоматически, но можно её переместить в другую папку "
+" например, в static/img, но тогда надо переписать путь:"
 " upload_to='static/img/users_avatars' "
 
 """ !!!! важно !!!! в файле settings нельзя удалять поле: AUTH_USER_MODEL = 'authnapp.ShopUser' """
+
 
 class ShopUser(AbstractUser):
     age = models.PositiveIntegerField(verbose_name="возраст", default=18)
