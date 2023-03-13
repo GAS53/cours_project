@@ -18,7 +18,7 @@ class ShopUser(AbstractUser):
     password = models.CharField(verbose_name="password", max_length=40, default="")
     registrationdate = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    is_superuser = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.username} ({self.password})"
