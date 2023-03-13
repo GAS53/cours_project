@@ -24,7 +24,7 @@ class ShopUserRegisterForm(UserCreationForm):
 
     class Meta:
         model = ShopUser
-        fields = ("username", "first_name", "surname", "email", "password1", "password2", "avatar")
+        fields = ("first_name", "surname", "email", "password1", "password2", "avatar")
 
 
 class ShopUserEditForm(UserChangeForm):
@@ -36,4 +36,4 @@ class ShopUserEditForm(UserChangeForm):
 
     class Meta:
         model = ShopUser
-        fields = ("username", "first_name", "surname", "email", "password", "avatar")
+        fields = ("first_name", "surname", "email", "password", "avatar")
