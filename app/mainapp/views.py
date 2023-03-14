@@ -54,7 +54,7 @@ def idea_edit(request, pk): # изменение идеи через форму
 
         idea = Idea.objects.filter(pk=pk).first()
 
-        # проверка на наличие ввода в поля. есть данные, то изменяет, если нет то пропускает
+        # проверка на наличие ввода в поля. если есть данные, то изменяет, если нет то пропускает
 
         title = request.POST['title-edit']
         if title: idea.title = title
