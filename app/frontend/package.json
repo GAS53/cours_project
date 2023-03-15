@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "webpack": "^5.76.1",
+    "webpack-cli": "^5.0.1"
+  }
+}
+"scripts": {
+  "dev": "webpack --mode development ./src/index.js --output ./static/frontend/main.js",
+  "build": "webpack --mode production ./src/index.js --output ./static/frontend/main.js"
+}

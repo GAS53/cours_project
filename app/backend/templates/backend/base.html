@@ -1,0 +1,75 @@
+{% load static %}
+{% load bootstrap4 %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP Project</title>
+</head>
+
+<body>
+
+    <div class="container-md site-container">
+        {% block title %}
+        <nav class="navbar sticky-top navbar-light bg-light mb-3 border-bottom border-primary">
+            <div class="container-fluid">
+
+                <!-- Главноая панель навигации -->
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Главная</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                            aria-expanded="false">Мой кабинет</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Профиль</a></li>
+                            <li><a class="dropdown-item" href="#">Мои идеи</a></li>
+                            <li><a class="dropdown-item" href="#">Что-то ещё</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Выход</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="#" src="">Wiki</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Выход</a>
+                    </li>
+                </ul>
+
+                <!-- Панель поиска -->
+                <form class="d-flex">
+                    <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search">
+
+                    <button class="btn mainButton" type="submit"><img class="service-img"
+                            src="https://cdn-icons-png.flaticon.com/128/751/751463.png" alt="Поиск"></button>
+                </form>
+
+                <!-- Кнопка входа в систему (модальное окно) -->
+                <button type="button" class="btn mainButton" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Войти в систему
+                </button>
+
+            </div>
+        </nav>
+
+        {% endblock %}
+
+        {% block content %}
+            Основной блок базовой страници на подмену
+        {% endblock content %}
+
+
+        {% block footer %}
+            Подвал базовой страници на подмену
+        {% endblock %}
+    
+    </div>
+</body>
+</html>
