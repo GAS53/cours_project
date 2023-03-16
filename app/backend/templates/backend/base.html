@@ -32,7 +32,7 @@
                             aria-expanded="false">Мой кабинет</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Профиль</a></li>
-                            <li><a class="dropdown-item" href="#">Мои идеи</a></li>
+                            <li><a class="dropdown-item" href="{% url 'backend:my_ideas' %}">Мои идеи</a></li>
                             <li><a class="dropdown-item" href="#">Что-то ещё</a></li>
                             <li>
                                 <hr class="dropdown-divider">
@@ -57,10 +57,12 @@
                 </form>
 
                 <!-- Кнопка входа в систему (модальное окно) -->
-                <button type="button" class="btn mainButton" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Войти в систему
-                </button>
-
+                <form method="post" action="{% url 'authapp:login' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn mainButton" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Войти в систему
+                    </button>
+                </form>
             </div>
         </nav>
 
