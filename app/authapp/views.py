@@ -48,16 +48,6 @@ def register(request):
     return render(request, "authapp/register.html", content)
 
 
-def cabinet(request):
-    title = "Кабинет"
-
-    name = request.user.username
-
-    content = {"title": title, "name": name}
-    return render(request, "authapp/cabinet.html", content)
-
-
-
 def edit(request):
     title = "редактирование"
 
@@ -71,3 +61,13 @@ def edit(request):
 
     content = {"title": title, "edit_form": edit_form, "media_url": settings.MEDIA_URL}
     return render(request, "authapp/edit.html", content)
+
+
+def cabinet(request):
+    title = "Кабинет"
+
+    name = request.user.username
+
+    content = {"title": title, "name": name}
+    return render(request, "authapp/cabinet.html", content)
+

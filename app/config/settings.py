@@ -8,7 +8,7 @@ SECRET_KEY = 'django-insecure-itn1eac(k(%6drd6bc=67_q_%sz-)id53g=tb=*+_j+4#u@f%q
 
 AUTH_USER_MODEL = 'authapp.BaseIdeinerUser' 
 
-DEBUG = False
+DEBUG = True
 
 if not DEBUG:
     REST_FRAMEWORK = {

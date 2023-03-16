@@ -35,14 +35,32 @@ class JoinedUsersModelViewSet(ModelViewSet):
 """ идеи. добавление, удаление, изменение """
 
 
-def ideas_list(request): # список всех идей.
-    title = "Идеи"
+def search(request): # список всех идей.
+    title = "Главная"
+    name = request.POST['name']
+
+    print(name)
+
+    ideas = Idea.objects.all()
+    ideas_list = []
+
+    for idea in ideas:
+        if name in idea.title:
+            ideas_list.append(idea)
+
+    content = {"title": title, "ideas": ideas_list, "media_url": settings.MEDIA_URL}
+
+    return render(request, "backend/index.html", content)
+
+
+def main(request): # список всех идей.
+    title = "Главная"
 
     ideas = Idea.objects.all()
 
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
-    return render(request, "backend/ideas.html", content)
+    return render(request, "backend/index.html", content)
 
 
 def idea_add(request): # добавление идеи через форму

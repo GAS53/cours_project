@@ -13,8 +13,8 @@ router.register(r'idea', IdeaModelViewSet, basename='idea')
 
 urlpatterns = [
     path("", RedirectView.as_view(url="index/")),
-    path("index/", views.Temp.as_view(), name="index"),
-    path("ideas_list/", backend.ideas_list, name="ideas_list"),
+    path("index/", backend.main, name="index"),
+    path("search/", backend.search, name="search"),
     path("idea_add/", backend.idea_add, name="idea_add"),
     path("idea_delete/<int:pk>)/", backend.idea_delete, name="idea_delete"),
     path("idea_edit/<int:pk>)/", backend.idea_edit, name="idea_edit"),

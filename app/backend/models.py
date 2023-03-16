@@ -1,4 +1,3 @@
-# from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
@@ -37,6 +36,7 @@ class Idea(DataTimeModel):
     rubrics = models.CharField(verbose_name='Рубрика', max_length=255)  # тут надо подумать
     preview = models.CharField(verbose_name='Описание', max_length=1000)
     body = models.TextField(verbose_name='Содержание')
+    created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, editable=False)
 
     body_as_markdown = models.BooleanField(verbose_name='Тип Идеи',  # тут не понял что это :(
                                            default=False)
@@ -63,7 +63,7 @@ class Feedback(DataTimeModel):
         (3, '⭐⭐⭐'),
         (2, '⭐⭐'),
         (1, '⭐'),
-    )
+    ) 
 
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE)
     rating = models.SmallIntegerField(verbose_name='Рейтинг', choices=RATINGS, default=RATING_FIVE)

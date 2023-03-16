@@ -10,13 +10,13 @@ from django.db import models
 
 class BaseIdeinerUser(AbstractUser):
     age = models.PositiveIntegerField(verbose_name="возраст", default=18)
-    nickname = models.CharField(verbose_name="ник", max_length=40, default="")
+    nickname = models.CharField(verbose_name="никнейм", max_length=40, default="user")
     email = models.CharField(verbose_name="email", max_length=40, default="")
     username = models.CharField(verbose_name="username", max_length=40, unique=True, default="")
     surname = models.CharField(verbose_name="surname", max_length=40, default="")
     avatar = models.ImageField(upload_to="media/users_avatars", blank=True, default="")
     password = models.CharField(verbose_name="password", max_length=40, default="")
-    registrationdate = models.DateTimeField(auto_now_add=True)
+    registrationdate = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, editable=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
