@@ -25,6 +25,7 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+C:/Users/3aBoDskoy/cours_project/mysite/mysite/
 MANIFEST
 
 # PyInstaller
