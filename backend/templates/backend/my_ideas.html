@@ -1,0 +1,170 @@
+{% extends "backend/base.html" %} 
+
+{% block content %}
+<div class="container-md site-container">
+
+    <!-- Главный контейнер -->
+    <div class="container-md mt-5">
+        <div class="row justify-content-center align-items-top">
+
+            <!-- Аватарка -->
+            <div class="col-4">
+                <img src="https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=826&t=st=1678618018~exp=1678618618~hmac=ea416d598467ae43cc431081515e0bb0a25e41cb22385a045ec12ca347842f9a"
+                    class="img-fluid img-thumbnail rounded" alt="Аватар">
+                <h3>{{ idea.autor }}</h3>
+            </div>
+
+            <!-- Список идей -->
+            <div class="col-8">
+                <!-- Форма добавления идеи-->
+                <div class="mb-3">
+                    <form method="post" action="{% url 'backend:idea_add' %}">
+                        {% csrf_token %}
+                        <div class="container">
+
+                            <div class="row justify-content-center align-items-center g-2">
+                                
+                                <!-- Название идеи -->
+                                <div class="col-8">
+                                    <label for="ideaName" class="form-label">Название идеи</label>
+                                    <input name="title" type="text" class="form-control" id="ideaName" placeholder="Название">
+                                </div>
+
+                                <!-- Выбор рубрики -->
+                                <div class="col">
+                                    <label for="" class="form-label">Рубрика</label>
+                                    <select class="form-select form-select" name="rubrics" id="">
+                                        <option selected value="Python">Python</option>
+                                        <option value="JS">JS</option>
+                                        <option value="Ещё что-то">Ещё что-то</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Описание идеи -->
+                            <div class="row justify-content-center align-items-center g-2">
+                                <div class="col">
+                                    <label for="preview" class="form-label">Описание</label>
+                                    <textarea name="preview" type="text" class="form-control" id="preview"
+                                        placeholder="Введите описание"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Содержание идеи -->
+                            <div class="row justify-content-center align-items-center g-2 mb-3">
+                                <label for="preview" class="form-label">Содержание</label>
+                                <textarea name="body" type="text" class="form-control" id="preview"
+                                    placeholder="Введите содержание"></textarea>
+                            </div>
+
+                            <div class="row justify-content-center align-items-center ">
+                                    <button type="submit" class="btn mainButton">Добавить идею</button>
+                            </div>
+
+                        </div>
+                    </form>
+                    <hr>
+                </div>
+
+                <!-- Карточка идеи -->
+                {% for item in ideas.values %}
+                <div class="card mb-3" style="min-height: 166px; min-width: 380px;">
+                    <div class="card-body">
+
+                        <div class="row g-3 justify-content-left align-items-top">
+
+                            <div class="col" style="min-width: 340px;">
+
+                                <div class="container">
+                                    <div class="row justify-content-center align-items-center g-2">
+                                        <h4 class="card-title text-center"><strong>{{ item.idea.title }}</strong></h4>
+                                    </div>
+
+                                    <div class="row g-1">
+
+                                        <div class="col my-auto">
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                    style="width: 10%" aria-valuenow="10" aria-valuemin="0"
+                                                    aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-1 my-auto">
+                                            <small class="text-muted">(1)</small>
+                                        </div>
+                                        <div class="row justify-content-center align-items-center g-2">
+                                            <div class="col">
+                                                <p class="card-text">Описание</p>
+                                                <p>{{ item.idea.preview }}</p>
+                                                <p class="card-text">
+                                                    <small class="text-muted">{{ item.idea.created_at }}</small>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Фоловеры -->
+                            <div class="col-3">
+                                <div>
+                                    <h5>Фоловеры</h5>
+                                    {% if joined_users %}
+                                        {% for joined_user in item.joined_users %}
+                                            <p> {{ joined_user.autor }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Войдите в систему</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Логин или email</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1"
+                            aria-describedby="emailHelp" placeholder="Введите логин или email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1"
+                            placeholder="Введите пароль">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Запомнить меня</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn mainButton">Войти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/main.js"></script>
+
+{% endblock content %}
