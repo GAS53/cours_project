@@ -1,15 +1,9 @@
 from backend import views
-from django.views.generic import RedirectView
 from django.urls import path, include
 import backend.views as backend
-from rest_framework.routers import DefaultRouter
-from .views import IdeaModelViewSet
 
 
 app_name = 'backend'
-
-router = DefaultRouter()
-router.register(r'idea', IdeaModelViewSet, basename='idea')
 
 urlpatterns = [
     path("", backend.main, name="index"),
@@ -31,5 +25,4 @@ urlpatterns = [
     path("like_delete/<int:pk>/", backend.like_delete, name="like_delete"),
     path("like_add/<int:pk>", backend.like_add, name="like_add"),
     path('api-main/', include('rest_framework.urls')),
-    path('api/', include(router.urls)),
 ]

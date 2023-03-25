@@ -1,13 +1,10 @@
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect, render
-from rest_framework.viewsets import ModelViewSet
 from .models import Idea, Feedback, JoinedUsers, LikesToIdeas
 from authapp.models import BaseIdeinerUser
-from .serializers import IdeaModelSerializer, FeedbackModelSerializer, JoinedUsersModelSerializer, LikesToIdeasModelSerializer
-from rest_framework.permissions import IsAuthenticated, BasePermission
 from django.contrib.auth.decorators import user_passes_test
-
+from rest_framework.permissions import IsAuthenticated, BasePermission
 
 class Temp(TemplateView):
     template_name = 'backend/index.html'
@@ -17,30 +14,6 @@ class StaffOnly(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_staff
 
-
-class IdeaModelViewSet(ModelViewSet):
-    queryset = Idea.objects.all()
-    serializer_class = IdeaModelSerializer
-
-
-class FeedbackModelViewSet(ModelViewSet):
-    queryset = Feedback.objects.all()
-    serializer_class = FeedbackModelSerializer
-
-
-class JoinedUsersModelViewSet(ModelViewSet):
-    queryset = JoinedUsers.objects.all()
-    serializer_class = JoinedUsersModelSerializer
-
-
-class JoinedUsersModelViewSet(ModelViewSet):
-    queryset = JoinedUsers.objects.all()
-    serializer_class = JoinedUsersModelSerializer
-
-
-class LikesToIdeasModelViewSet(ModelViewSet):
-    queryset = LikesToIdeas.objects.all()
-    serializer_class = LikesToIdeasModelSerializer
 
 
 def GenIdeasList(ideas):
@@ -146,7 +119,7 @@ def search(request):
 
 """ идеи """
 
-
+@user_passes_test(lambda u: u.is_authenticated)
 def my_ideas(request):
     title = "Мои идели"
     autor = request.user.username
@@ -156,6 +129,7 @@ def my_ideas(request):
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
     return render(request, "backend/my_ideas.html", content)
+
 
 
 def idea_add(request):  # добавление идеи через форму
@@ -200,10 +174,11 @@ def idea_card(request, pk): # карта идеи
 def idea_card_delete(request, pk):  # удаление идеи при нажатии на кнопку
 
     title = "Идеи"
-    ideas = GenIdeasList(Idea.objects.all())
 
     idea = Idea.objects.filter(pk=pk)
     idea.delete()
+
+    ideas = GenIdeasList(Idea.objects.all())
 
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
     return render(request, "backend/index.html", content)

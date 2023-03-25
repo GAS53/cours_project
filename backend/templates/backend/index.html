@@ -73,6 +73,9 @@
                             <div class="col" style="min-width: 340px;">
 
                                 <div class="container">
+
+                                    <a href="{% url 'backend:idea_card' item.idea.pk %}">страница идеи</a>
+
                                     <div class="row justify-content-center align-items-center g-2">
                                         <h4 class="card-title text-center"><strong>{{ item.idea.title }}</strong></h4>
                                     </div>
@@ -105,6 +108,11 @@
                                         </div>
 
                                     </div>
+
+                                    {% if user.is_superuser or item.idea.autor == request.user.username %}
+                                    <a href="{% url 'backend:idea_delete' item.idea.pk %}">удалить</a>
+                                    {% endif %}
+                                    
                                 </div>
                             </div>
 
@@ -114,8 +122,9 @@
 
                                         <div class="col">
                                             <div class="serviceButton">
-                                                <a class="nav-link " href="#"><img class="service-img"
-                                                        src="https://cdn-icons-png.flaticon.com/128/134/134808.png"></a>
+                                                <button class="nav-link feedback"><img class="service-img"
+                                                    src="https://cdn-icons-png.flaticon.com/128/134/134808.png">
+                                                </button>
                                             </div>
                                         </div>
 
@@ -130,6 +139,35 @@
                                 </div>
                             </div>
                         </div>
+
+                        <form method="post" action="{% url 'backend:feedback_add' item.idea.pk %}" style="display: none;width: 200px;">
+                            {% csrf_token %}
+    
+                            <div class="rating-area" style="margin-left: 15px;">
+                                <input type="radio" id="star-1" name="rating" value="1">
+                                <label for="star-1" title="Оценка «1»">★</label>
+                                <input type="radio" id="star-2" name="rating" value="2">
+                                <label for="star-2" title="Оценка «2»">★</label>
+                                <input type="radio" id="star-3" name="rating" value="3">
+                                <label for="star-3" title="Оценка «3»">★</label>
+                                <input type="radio" id="star-4" name="rating" value="4">
+                                <label for="star-4" title="Оценка «4»">★</label>
+                                <input type="radio" id="star-5" name="rating" value="5">
+                                <label for="star-5" title="Оценка «5»">★</label>
+    
+                                <textarea name="feedback_text"></textarea>
+                                <button type="submit">отправить</button>
+                            </div>
+    
+                        </form>
+
+                        {% for fd in item.feedback %}
+                        <div>
+                            <p>оценка: {{ fd.rating }}</p>
+                            <p>отзыв: {{ fd.feedback }}</p>
+                        </div>
+                        {% endfor %}
+
                     </div>
                 </div>
                 {% endfor %}

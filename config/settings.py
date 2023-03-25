@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,7 +18,8 @@ if not DEBUG:
     }
 
 ALLOWED_HOSTS = ['*']
-
+LOGOUT_REDIRECT_URL = '/'
+# LOGIN_URL = '/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'authapp',
     'frontend',
     'rest_framework',
-    'bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +86,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+        
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 LANGUAGE_CODE = 'ru-RU'
 
