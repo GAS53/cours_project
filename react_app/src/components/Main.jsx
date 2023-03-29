@@ -10,6 +10,7 @@ function Main() {
     useEffect(() => {
         const ideas = axios.get('http://127.0.0.1:8000/api/ideas/')
         ideas.then( res => {
+            console.log(res.data)
             setIdeas(res.data.results)
         })
         .catch(err => {

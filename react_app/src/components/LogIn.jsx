@@ -17,11 +17,11 @@ const LogIn = ({togleVisable}) => {
         }
         setValidated(true);
         const data = {
-        username: loginForm.username.value,
+        email: loginForm.username.value,
         password: loginForm.password.value,
         };
-
-
+        console.log('login data')
+        console.log(data)
         axios.post('http://127.0.0.1:8000/api/login/', data)
         .then((res) => {
             localStorage.setItem("auth", JSON.stringify({
@@ -30,6 +30,7 @@ const LogIn = ({togleVisable}) => {
             user: res.data.user,
             }));
             navigate("/");
+            console.log('login')
             console.log(res)}
             )
         .catch((err) => {
@@ -55,7 +56,7 @@ const LogIn = ({togleVisable}) => {
                         
                         >
                         <div className="mb-3">
-                            <label className="form-label">Логин</label>
+                            <label className="form-label">Email</label>
                             <input type="email" className="form-control" id="username" aria-describedby="emailHelp"
                                 placeholder="Введите логин"/>
                         </div>

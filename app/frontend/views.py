@@ -62,13 +62,23 @@ class UserViewSet(AbstractViewSet):
         obj = BaseIdeinerUser.objects.get_object_by_public_id(self.kwargs['pk'])
         self.check_object_permissions(self.request, obj)
         return obj
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class LoginViewSet(ViewSet):
+
+
+
+class LoginViewSet(viewsets.ViewSet):
     serializer_class = LoginSerializer
     permission_classes = (AllowAny,)
     http_method_names = ['post']
     
     def create(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.serializer_class(data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
@@ -177,16 +187,16 @@ class FeedbackViewSet(AbstractViewSet):
     serializer_class = FeedbackSerializer
 
     def get_queryset(self):
-        return models.Feedback.objects.all()  # временно
-        # if self.request.user.is_superuser: 
-        #     return models.Feedback.objects.all()
-        # print('self.kwargs')
-        # print(self.kwargs)
-        # idea_pk = self.kwargs['idea_pk']
-        # if idea_pk is None:
-        #     return Http404
-        # queryset = models.Feedback.objects.filter(post__public_id=idea_pk)
-        # return queryset
+        # return models.Feedback.objects.all()  # временно
+        if self.request.user.is_superuser: 
+            return models.Feedback.objects.all()
+        print('self.kwargs')
+        print(self.kwargs)
+        idea_pk = self.kwargs['idea_pk']
+        if idea_pk is None:
+            return Http404
+        queryset = models.Feedback.objects.filter(post__public_id=idea_pk)
+        return queryset
     
     def get_object(self):
         obj = models.Feedback.objects.get_object_by_public_id(self.kwargs['pk'])

@@ -1,17 +1,26 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Button } from "./UI/button/Button"
 import { Link, Outlet } from "react-router-dom";
 import Modal from "./UI/modal/Modal";
 import LogIn from "./LogIn";
 import { useNavigate } from "react-router-dom";
 
+
 function Title({isVisable, togleVisable}) {
+
+    // доделать здесь!!!!!!!!!!
     const navigate = useNavigate();
+    // useEffect(() => {
+    // const is_auth = {localStorage.getItem('auth') ? true : false}
+    // }, [localStorage.getItem('auth')])
+    // const is_auth = false
+
 
     function logout() {
         localStorage.removeItem("auth");
         navigate("/");
     }
+
 
     return (
         <>
@@ -22,15 +31,22 @@ function Title({isVisable, togleVisable}) {
                             <li className="nav-item">
                                 <Link to="/" className="nav-link">Главная</Link>
                             </li>
+                            
                             <li className="nav-item">
-                                <Link to="lk/" className="nav-link">Личный кабинет</Link>
+                            {/* { is_auth ?  */}
+
+
+                            <Link to="lk/" className="nav-link">Личный кабинет</Link> 
                             </li>
                             <li className="nav-item">
-                                <Link to="register/" className="nav-link">Регистрация</Link>
+                            <Link to="register/" className="nav-link">Регистрация</Link>}
                             </li>
                             <li className="nav-item">
+                            {/* { this.is_auth ?  */}
                                 <a className="nav-link" onClick={logout} href="/" tabIndex="-1" aria-disabled="true">Выход</a>
+                            
                             </li>
+
                         </ul>
 
 

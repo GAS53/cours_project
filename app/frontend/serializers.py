@@ -34,17 +34,26 @@ class UserSerializer(AbstractSerializer):
         read_only_field = ['is_active']
 
 
-
-
+    # def create(self, request, *args, **kwargs):
+    #     print('request.data')
+    #     print(request)
+    #     serializer = self.get_serializer(data=request.data) 
+    #     print('request.data error')
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 # регистрация и валидация
 
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
+        print(f'dddddddddddddddddddddddd {data}')
         refresh = self.get_token(self.user)
         data['user'] = UserSerializer(self.user).data
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
+        print(f'ddd {data}')
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
         return data
