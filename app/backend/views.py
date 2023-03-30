@@ -48,18 +48,15 @@ def lk_edit(request):  # изменение профиля через форму
 
     if request.method == 'POST':
 
-        nickname = request.user.nickname
-        user = BaseIdeinerUser.objects.filter(nickname=nickname).first()
+        surname = request.user.surname
+        user = BaseIdeinerUser.objects.filter(surname=surname).first()
 
-        if request.POST['nickname']: user.nickname = request.POST['nickname']
         if request.POST['username']: user.username = request.POST['username']
         if request.POST['surname']: user.surname = request.POST['surname']
         if request.POST['email']: user.email = request.POST['email']
         if request.POST['age']: user.age = request.POST['age']
 
         user.save()
-
-        print(request.POST['nickname'], request.user.nickname, bool(request.POST['nickname']))
 
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
