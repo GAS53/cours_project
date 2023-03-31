@@ -1,5 +1,6 @@
 from django.db import models
 
+
 import uuid
 
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -23,17 +24,22 @@ class AbstractManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().all()
 
+from django.conf import settings
+
+
 
 """ Дата создания/изменения/удаления"""
 
 
 class DataTimeModel(models.Model):
+
     objects = AbstractManager()
     public_id = models.UUIDField(db_index=True, unique=True,
     default=uuid.uuid4, editable=False)
     created = models.DateTimeField(verbose_name='Дата создания',
                                       auto_now_add=True, editable=False)
     updated = models.DateTimeField(verbose_name='Дата изменения',
+
                                       auto_now=True, editable=False)
     deleted = models.BooleanField(verbose_name='Запись удалена', default=False)
 
@@ -44,20 +50,28 @@ class DataTimeModel(models.Model):
     class Meta:
         # '-' говорит об обратной сортировке
         ordering = ('-created',)
+=======
+
         # важный флаг для исключения дублирования
         abstract = True
 
 
 
+class ObjectsManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().all()
 
 
 class Idea(DataTimeModel):
-    
+    objects = ObjectsManager()
+
     autor = models.CharField(verbose_name='Никнейм', max_length=22)
     title = models.CharField(verbose_name='Заголовок', max_length=255)
     rubrics = models.CharField(verbose_name='Рубрика', max_length=255)  # тут надо подумать
     preview = models.CharField(verbose_name='Описание', max_length=1000)
     body = models.TextField(verbose_name='Содержание')
+
 
     def __str__(self) -> str:
         return f'{self.autor} {self.title} {self.rubrics}'
@@ -82,7 +96,7 @@ class Feedback(DataTimeModel):
         (2, '⭐⭐'),
         (1, '⭐'),
     )
-    
+
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE)
     rating = models.SmallIntegerField(verbose_name='Рейтинг', choices=RATINGS, default=RATING_FIVE)
     feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')

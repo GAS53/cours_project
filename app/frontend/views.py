@@ -1,3 +1,4 @@
+
 from backend import models
 from authapp.models import BaseIdeinerUser
 
@@ -223,5 +224,6 @@ class LikesViewSet(AbstractViewSet):
     queryset = models.LikesToIdeas.objects.all()
     serializer_class = IdeaSerializer
     # permission_classes = [permissions.IsAuthenticated]
+
 
 

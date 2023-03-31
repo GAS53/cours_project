@@ -11,6 +11,7 @@ AUTH_USER_MODEL = 'authapp.BaseIdeinerUser'
 DEBUG = True
 
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -31,6 +32,7 @@ if DEBUG:
 
 ALLOWED_HOSTS = ['*']
 LOGOUT_REDIRECT_URL = '/'
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',# удалить на проде CORS
     'django.middleware.common.CommonMiddleware',# удалить на проде CORS
+
 ]
 
 ROOT_URLCONF = 'config.urls'
