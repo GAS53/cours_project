@@ -1,0 +1,71 @@
+{% extends 'backend/base.html' %}
+
+{% block content %}
+
+<!-- форма добавления идеи -->
+
+<form method="post" action="{% url 'backend:idea_add' %}">
+    {% csrf_token %}
+    <textarea name="title" placeholder="title"></textarea>
+    <textarea name="rubrics" placeholder="rubrics"></textarea>
+    <textarea name="preview" placeholder="preview"></textarea>
+    <textarea name="body" placeholder="body"></textarea>
+
+    <button type="submit" style="width:100px;height:40px"></button>
+</form>
+
+<!-- список со всеми идеями. выводиться через цикл -->
+
+{% for item in ideas %}
+
+      <div>
+          <h2>autor: {{ item.autor }}</h2>
+          <h2>title: {{ item.title }}</h2>
+          <h2>rubrics: {{ item.rubrics }}</h2>
+          <h2>preview: {{ item.preview }}</h2>
+          <h2>body: {{ item.body }}</h2>
+
+          <!-- кнопка удаления  идеи -->
+          <a href="{% url 'backend:idea_delete' item.pk %}">удалить</a>
+
+          <!-- форма изменеения  идеи -->
+          <form method="post" action="{% url 'backend:idea_edit' item.pk %}">
+              {% csrf_token %}
+              <textarea name="title-edit" placeholder="{{ item.title }}"></textarea>
+              <textarea name="rubrics-edit" placeholder="{{ item.rubrics }}"></textarea>
+              <textarea name="preview-edit" placeholder="{{ item.preview }}"></textarea>
+              <textarea name="body-edit" placeholder="{{ item.body }}"></textarea>
+
+              <button type="submit" style="width:100px;height:40px"></button>
+          </form>
+
+          <!-- форма отзыва об идее -->
+          <form method="post" action="{% url 'backend:feedback_add' item.pk %}">
+              {% csrf_token %}
+              <div>
+
+                  <!-- оценки -->
+                  <div>
+                      <input type="radio" id="star-1" name="rating" value="1">
+                      <label for="star-1" title="Оценка «1»">★</label>
+                      <input type="radio" id="star-2" name="rating" value="2">
+                      <label for="star-2" title="Оценка «2»">★</label>
+                      <input type="radio" id="star-3" name="rating" value="3">
+                      <label for="star-3" title="Оценка «3»">★</label>
+                      <input type="radio" id="star-4" name="rating" value="4">
+                      <label for="star-4" title="Оценка «4»">★</label>
+                      <input type="radio" id="star-5" name="rating" value="5">
+                      <label for="star-5" title="Оценка «5»">★</label>
+                  </div>
+                  <div>
+                      <textarea placeholder="feedback" name="feedback"></textarea>
+                  </div>
+                  <input type="submit" value="Отправить">
+              </div>
+          </form>
+
+      </div>
+
+{% endfor %}
+
+{% endblock content %}

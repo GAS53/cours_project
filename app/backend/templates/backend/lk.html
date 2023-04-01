@@ -1,0 +1,70 @@
+{% extends "backend/base.html" %} 
+
+{% block content %}
+
+    <div class="container-md site-container">
+
+        <!-- Главный контейнер -->
+        <div class="container-md mt-5">
+            <div class="row justify-content-center align-items-top">
+                
+                <!-- Аватарка -->
+                <div class="col-4">
+                    <img src="https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=826&t=st=1678618018~exp=1678618618~hmac=ea416d598467ae43cc431081515e0bb0a25e41cb22385a045ec12ca347842f9a"
+                        class="img-fluid img-thumbnail rounded" alt="Аватар">
+                    <h3>{{ request.user.username }}</h3>
+                </div>
+
+                <!-- Данные -->
+                <form method="post" action="{% url 'backend:lk_edit' %}" class="col-8">
+                    {% csrf_token %}
+
+                    <div class="row justify-content-center align-items-center g-2">
+                        <div class="col">
+                            <label class="form-label">Никнейм</label>
+                            <textarea class="lead" name="nickname" placeholder="{{ request.user.nickname }}"></textarea>
+
+                        </div>
+                        <div class="col">   
+                            <label class="form-label">Дата регистрации</label>
+                            <p class="lead">{{ request.user.registrationdate }}</p>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row justify-content-center align-items-center g-2">
+                        <div class="col">
+                            <label class="form-label">Имя</label>
+                            <textarea class="lead" name="username" placeholder="{{ request.user.username }}"></textarea>
+
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Фамилия</label>
+                            <textarea class="lead" name="surname" placeholder="{{ request.user.surname }}"></textarea>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row justify-content-center align-items-center g-2">
+                        <div class="col">
+                            <label class="form-label">Адрес почты</label>
+                            <textarea class="lead" name="email" placeholder="{{ request.user.email }}"></textarea>
+
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Возраст</label>
+                            <textarea class="lead" name="age" placeholder="{{ request.user.age }}"></textarea>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <button type="submit">Сохранить</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+{% endblock %}
