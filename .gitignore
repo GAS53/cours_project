@@ -1,3 +1,18 @@
+.python-version
+/app/authapp/__pycache__
+/app/authapp/migrations
+/app/backend/migrations
+/app/backend/__pycache__
+/app/config/__pycache__
+/app/frontend/__pycache__
+/app/frontend/node_modules
+/app/db.sqlite3
+
+
+
+
+
+
 # For python and linux and Visual_code
 /react_app/node_modules/*
 /react_app/node_modules/
