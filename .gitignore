@@ -7,15 +7,15 @@
 /app/frontend/__pycache__
 /app/frontend/node_modules
 /app/db.sqlite3
-
+/react_app/node_modules
+/react_app/node_modules
 
 
 
 
 
 # For python and linux and Visual_code
-/react_app/node_modules/*
-/react_app/node_modules/
+
 /.pnp
 .pnp.js
 
