@@ -16,11 +16,8 @@ class StaffOnly(BasePermission):
 
 
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> BW
 def GenIdeasList(ideas):
     
     # генератор списка идей.

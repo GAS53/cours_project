@@ -14,11 +14,6 @@ def login(request):
     if request.method == "POST" and login_form.is_valid():
         username = request.POST["username"]
         password = request.POST["password"]
-<<<<<<< HEAD
-        print(username, ' ', password)
-=======
-
->>>>>>> BW
         user = auth.authenticate(username=username, password=password)
         if user and user.is_active:
             auth.login(request, user)
@@ -42,11 +37,7 @@ def register(request):
 
     if request.method == "POST":
         register_form = BaseIdeinerUserRegisterForm(request.POST, request.FILES)
-<<<<<<< HEAD
         
-=======
-
->>>>>>> BW
         if register_form.is_valid():
             register_form.save()
             return HttpResponseRedirect(reverse("authapp:login"))
