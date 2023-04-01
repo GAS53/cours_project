@@ -10,6 +10,7 @@ AUTH_USER_MODEL = 'authapp.BaseIdeinerUser'
 
 DEBUG = True
 
+<<<<<<< HEAD
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
@@ -31,6 +32,18 @@ if DEBUG:
 
 ALLOWED_HOSTS = ['*']
 LOGOUT_REDIRECT_URL = '/'
+=======
+if not DEBUG:
+    REST_FRAMEWORK = {
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        )
+    }
+
+ALLOWED_HOSTS = ['*']
+LOGOUT_REDIRECT_URL = '/'
+# LOGIN_URL = '/'
+>>>>>>> BW
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,10 +56,13 @@ INSTALLED_APPS = [
     'authapp',
     'frontend',
     'rest_framework',
+<<<<<<< HEAD
     'corsheaders', # удалить на проде CORS
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
 
+=======
+>>>>>>> BW
 ]
 
 MIDDLEWARE = [
@@ -57,8 +73,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+<<<<<<< HEAD
     'corsheaders.middleware.CorsMiddleware',# удалить на проде CORS
     'django.middleware.common.CommonMiddleware',# удалить на проде CORS
+=======
+>>>>>>> BW
 ]
 
 ROOT_URLCONF = 'config.urls'

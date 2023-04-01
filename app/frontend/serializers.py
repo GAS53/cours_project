@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
@@ -163,3 +164,7 @@ class LikesSerializer(AbstractSerializer):
     class Meta:
         model = models.LikesToIdeas
         fields = ['idea', 'autor']
+=======
+# from rest_framework import serializers
+# from models import 
+>>>>>>> BW

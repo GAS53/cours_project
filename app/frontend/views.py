@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from backend import models
 from authapp.models import BaseIdeinerUser
 
@@ -225,3 +226,9 @@ class LikesViewSet(AbstractViewSet):
     # permission_classes = [permissions.IsAuthenticated]
 
 
+=======
+from django.views.generic import TemplateView
+
+class Temp(TemplateView):
+    template_name = 'frontend/index.html'
+>>>>>>> BW

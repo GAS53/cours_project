@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import uuid
 
 from django.contrib.auth.models import  AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -7,12 +8,18 @@ from django.http import Http404
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from backend import models as back_models
+=======
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+>>>>>>> BW
 
 # " все картинки загружаются в папку users_avatars. она создаётся авытоматически, но можно её переместить в другую папку, " \
 # " например, в static/img, но тогда надо переписать путь:" \
 # " upload_to='static/img/users_avatars' "
 
 """ !!!! важно !!!! в файле settings нельзя удалять поле: AUTH_USER_MODEL = 'authapp.BaseIdeinerUser' """
+<<<<<<< HEAD
 class UserManager(BaseUserManager):
     'добавлено для JWT Tokena'
     def get_object_by_public_id(self, public_id):
@@ -61,11 +68,20 @@ class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(validators=[username_validator], verbose_name="логин", max_length=40, unique=True, default="")
     surname = models.CharField(verbose_name="фамилия", max_length=40, default="")
     first_name = models.CharField(verbose_name="имя", max_length=40, default="")
+=======
+
+class BaseIdeinerUser(AbstractUser):
+    age = models.PositiveIntegerField(verbose_name="возраст", default=18)
+    email = models.CharField(verbose_name="email", max_length=40, default="")
+    username = models.CharField(verbose_name="username", max_length=40, unique=True, default="")
+    surname = models.CharField(verbose_name="surname", max_length=40, default="")
+>>>>>>> BW
     avatar = models.ImageField(upload_to="media/users_avatars", blank=True, default="")
     password = models.CharField(verbose_name="password", max_length=40, default="")
     registrationdate = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+<<<<<<< HEAD
     posts_liked = models.ManyToManyField(back_models.Idea, related_name="liked_by")
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
@@ -100,3 +116,8 @@ class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin):
 
 
 
+=======
+
+    def __str__(self):
+        return f"{self.username} ({self.password})"
+>>>>>>> BW

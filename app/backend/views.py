@@ -16,8 +16,11 @@ class StaffOnly(BasePermission):
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> BW
 def GenIdeasList(ideas):
     
     # генератор списка идей.
@@ -50,10 +53,16 @@ def lk_edit(request):  # изменение профиля через форму
 
     if request.method == 'POST':
 
+<<<<<<< HEAD
         nickname = request.user.nickname
         user = BaseIdeinerUser.objects.filter(nickname=nickname).first()
 
         if request.POST['nickname']: user.nickname = request.POST['nickname']
+=======
+        surname = request.user.surname
+        user = BaseIdeinerUser.objects.filter(surname=surname).first()
+
+>>>>>>> BW
         if request.POST['username']: user.username = request.POST['username']
         if request.POST['surname']: user.surname = request.POST['surname']
         if request.POST['email']: user.email = request.POST['email']
@@ -61,8 +70,11 @@ def lk_edit(request):  # изменение профиля через форму
 
         user.save()
 
+<<<<<<< HEAD
         print(request.POST['nickname'], request.user.nickname, bool(request.POST['nickname']))
 
+=======
+>>>>>>> BW
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -124,7 +136,11 @@ def search(request):
 @user_passes_test(lambda u: u.is_authenticated)
 def my_ideas(request):
     title = "Мои идели"
+<<<<<<< HEAD
     autor = request.user.username
+=======
+    autor = request.user.surname
+>>>>>>> BW
 
     ideas = GenIdeasList(Idea.objects.filter(autor=autor))
 
@@ -137,7 +153,11 @@ def my_ideas(request):
 def idea_add(request):  # добавление идеи через форму
 
     if request.method == 'POST':
+<<<<<<< HEAD
         username = request.user.username
+=======
+        username = request.user.surname
+>>>>>>> BW
 
         title = request.POST['title']
         preview = request.POST['preview']
@@ -165,7 +185,10 @@ def idea_card(request, pk): # карта идеи
     feedbacks = Feedback.objects.filter(idea=idea)
     joined_users = JoinedUsers.objects.filter(idea=idea)
     likes = LikesToIdeas.objects.filter(idea=idea)
+<<<<<<< HEAD
     print(pk, idea, Idea.objects.all())
+=======
+>>>>>>> BW
 
     content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 
                "likes": likes, "media_url": settings.MEDIA_URL}
@@ -278,7 +301,14 @@ def feedback_delete(request, pk):  # удаление отзыва при наж
 def joined_user_add(request, pk):  # добавление пользователя в проект через форму
 
     idea = Idea.objects.filter(pk=pk).first()
+<<<<<<< HEAD
     autor = request.user.nickname
+=======
+    autor = request.user.surname
+
+    if JoinedUsers.objects.filter(idea=idea, autor=autor):
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+>>>>>>> BW
 
     new_joined_user = JoinedUsers.objects.create(idea=idea, autor=autor)
     new_joined_user.save()
@@ -289,7 +319,11 @@ def joined_user_add(request, pk):  # добавление пользовател
 def joined_user_delete(request, pk):  # удаление пользователя из проекта при нажатии на кнопку
 
     idea = Feedback.objects.filter(pk=pk).first()
+<<<<<<< HEAD
     autor = request.user.username
+=======
+    autor = request.user.surname
+>>>>>>> BW
 
     joined_user = JoinedUsers.objects.filter(idea=idea, autor=autor).first()
     joined_user.delete()

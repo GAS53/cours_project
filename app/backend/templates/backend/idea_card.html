@@ -49,7 +49,11 @@
                                                 <p class="card-text">Описание</p>
                                                 <p>{{ idea.preview }}</p>
                                                 <p class="card-text">
+<<<<<<< HEAD
                                                     <small class="text-muted">Опубликовано {{ idea.created }}</small>
+=======
+                                                    <small class="text-muted">Опубликовано {{ idea.created_at }}</small>
+>>>>>>> BW
                                                 </p>
                                             </div>
                                         </div>
@@ -67,6 +71,7 @@
                                             {% endfor %}
                                         </div>
 
+<<<<<<< HEAD
                                         <div style="width: 100%;display:inline;z-index:100;margin-top:30px;">
                                             {% if likes %}
                                             <div>поставил лайк: {% for like in likes %} {{ like.autor }} {% endfor %}</div>
@@ -79,6 +84,22 @@
                                             {% endif %}
                                         </div>
 
+=======
+                                        <div style="width:100%;display:inline;z-index:100;top:100px">
+                                            <ul style="margin: 0;padding: 0;list-style: none;">
+                                                <h4>присоеденились к проекту</h4>
+                                                {% for joined_user in joined_users %}
+                                                <li> {{ joined_user.autor }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <div style="width: 100%;display:inline;z-index:100;margin-top:30px;">
+                                            {% if likes %}
+                                            <div>поставили лайк: {% for like in likes %} {{ like.autor }} {% endfor %}</div>
+                                            {% endif %}
+                                        </div>
+>>>>>>> BW
                                     </div>
                                 </div>
                             </div>
