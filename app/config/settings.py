@@ -28,6 +28,13 @@ if DEBUG:
     ]
     CORS_ALLOW_CREDENTIALS = True
     CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ORIGIN_WHITELIST = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:9000"
+]
 
 ALLOWED_HOSTS = ['*']
 LOGOUT_REDIRECT_URL = '/'
@@ -50,6 +57,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',# удалить на проде CORS
+    'django.middleware.common.CommonMiddleware',# удалить на проде CORS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,8 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',# удалить на проде CORS
-    'django.middleware.common.CommonMiddleware',# удалить на проде CORS
+    
+    
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -128,4 +137,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
     ]
 
+DEFAULT_AVATAR_URL = "https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=826&t=st=1678618018~exp=1678618618~hmac=ea416d598467ae43cc431081515e0bb0a25e41cb22385a045ec12ca347842f9a"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL= '/media/'
+MEDIA_ROOT = BASE_DIR / 'uploads'

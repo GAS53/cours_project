@@ -50,7 +50,8 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-
+def path_to_avatars(instance, filename):
+        return 'user_{0}/{1}'.format(instance.public_id, filename)
 
 # заменен  AbstractUser т.к. перезаписываются поля дублировние при наследовании
 class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin): 
@@ -62,7 +63,7 @@ class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(validators=[username_validator], verbose_name="логин", max_length=40, unique=True, default="")
     surname = models.CharField(verbose_name="фамилия", max_length=40, default="")
     first_name = models.CharField(verbose_name="имя", max_length=40, default="")
-    avatar = models.ImageField(upload_to="media/users_avatars", blank=True, default="")
+    avatar = models.ImageField(upload_to=path_to_avatars, blank=True, default="")
     password = models.CharField(verbose_name="password", max_length=40, default="")
     registrationdate = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -97,6 +98,9 @@ class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin):
         return f"{self.username} {self.surname}"
     
     objects = UserManager()
+
+
+    
 
 
 

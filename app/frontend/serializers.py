@@ -12,6 +12,7 @@ from rest_framework.exceptions import ValidationError
 
 from backend import models
 from authapp.models import BaseIdeinerUser
+from django.conf import settings
 
 
 # абстрактный базовый сериализатор
@@ -30,20 +31,21 @@ class UserSerializer(AbstractSerializer):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ['username', 'first_name', 'surname', 'email', 'age', 'password', 'is_superuser', 'public_id']
+        fields = ['username', 'first_name', 'surname', 'email', 'age', 'password', 'is_superuser', 'public_id', 'avatar']
         read_only_field = ['is_active']
 
 
-    # def create(self, request, *args, **kwargs):
-    #     print('request.data')
-    #     print(request)
-    #     serializer = self.get_serializer(data=request.data) 
-    #     print('request.data error')
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-# регистрация и валидация
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        print('representation')
+        print(representation)
+        if not representation['avatar']:
+            representation['avatar'] = settings.DEFAULT_AUTO_FIELD
+            return representation
+        if settings.DEBUG: # debug enabled for dev
+            request = self.context.get('request')
+            representation['avatar'] = request.build_absolute_uri(representation['avatar'])
+        return representation
 
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):

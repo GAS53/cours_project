@@ -1,24 +1,26 @@
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import axios from "axios";
 
 function NewIdea(props) { 
-    const autorInputRef = useRef('testautor');
+    const [rubric, setRubric] = useState()
     const titleInputRef = useRef();
-    const rubricsInputRef = useRef();
     const previewInputRef = useRef();
     const bodyInputRef = useRef();
  
 
     function handleSubmit(e){
+        const autor = JSON.parse(localStorage.getItem('auth'))
         const data = {
-            // autor: autorInputRef.current.value,
-            autor: 'testautor',
+            autor: autor.user.username,
             title: titleInputRef.current.value,
-            rubrics: rubricsInputRef.current.value,
+            rubrics: rubric,
             preview: previewInputRef.current.value,
             body: bodyInputRef.current.value,
         }
-        console.log(data)
+        axios.post("http://127.0.0.1:8000/api/ideas/", data)
+    
+    
     }
     return (
         <div className="container-md site-container">
@@ -35,13 +37,13 @@ function NewIdea(props) {
                             <div className="row justify-content-center align-items-center g-2">
                                 
                                 <div className="col-8">
-                                    <label for="ideaName" className="form-label">Название идеи</label>
+                                    <label className="form-label">Название идеи</label>
                                     <input name="title" ref={titleInputRef} type="text" className="form-control" id="ideaName" placeholder="Название"/>
                                 </div>
 
                                 <div className="col">
-                                    <label for="" className="form-label">Рубрика</label>
-                                    <select className="form-select form-select" name="rubrics" ref={rubricsInputRef} id="">
+                                    <label className="form-label">Рубрика</label>
+                                    <select className="form-select form-select" name="rubrics" value={rubric} onChange={e => { setRubric(e)}} id="">
                                         <option selected value="Python">Python</option>
                                         <option value="JS">JS</option>
                                         <option value="Ещё что-то">Ещё что-то</option>
@@ -51,15 +53,15 @@ function NewIdea(props) {
 
                             <div className="row justify-content-center align-items-center g-2">
                                 <div className="col">
-                                    <label for="preview" className="form-label">Описание</label>
+                                    <label  className="form-label">Описание</label>
                                     <textarea name="preview"  ref={previewInputRef} type="text" className="form-control" id="preview"
                                         placeholder="Введите описание"></textarea>
                                 </div>
                             </div>
 
                             <div className="row justify-content-center align-items-center g-2 mb-3">
-                                <label for="preview" className="form-label">Содержание</label>
-                                <textarea name="body" ref={previewInputRef} type="text" className="form-control" id="preview"
+                                <label  className="form-label">Содержание</label>
+                                <textarea name="body" ref={bodyInputRef} type="text" className="form-control" id="preview"
                                     placeholder="Введите содержание"></textarea>
                             </div>
 

@@ -29,7 +29,6 @@ const LogIn = ({togleVisable}) => {
             refresh: res.data.refresh,
             user: res.data.user,
             email: data.email,
-            password: data.password,
             public_id: res.data.public_id,
             }));
             navigate("/");
