@@ -25,17 +25,22 @@ class AbstractManager(models.Manager):
 
 
 """ Дата создания/изменения/удаления"""
-
+class AbstractManager(models.Manager):
+    def get_object_by_public_id(self, public_id):
+        try:
+            instance = self.get(public_id=public_id)
+            return instance
+        except (ObjectDoesNotExist, ValueError, TypeError):
+            return Http404
 
 class DataTimeModel(models.Model):
     objects = AbstractManager()
-    public_id = models.UUIDField(db_index=True, unique=True,
-    default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(verbose_name='Дата создания',
-                                      auto_now_add=True, editable=False)
-    updated = models.DateTimeField(verbose_name='Дата изменения',
-                                      auto_now=True, editable=False)
+    public_id = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, editable=False)
+    updated = models.DateTimeField(verbose_name='Дата изменения', auto_now=True, editable=False)
     deleted = models.BooleanField(verbose_name='Запись удалена', default=False)
+    objects = AbstractManager()
+
 
     def delete(self, *args, **kwargs):
         self.deleted = True
@@ -52,7 +57,6 @@ class DataTimeModel(models.Model):
 
 
 class Idea(DataTimeModel):
-    
     autor = models.CharField(verbose_name='Никнейм', max_length=22)
     title = models.CharField(verbose_name='Заголовок', max_length=255)
     rubrics = models.CharField(verbose_name='Рубрика', max_length=255)  # тут надо подумать

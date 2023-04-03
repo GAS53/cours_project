@@ -137,15 +137,17 @@ class UserPermission(BasePermission):
             return bool(request.user and request.user.is_authenticated)
         return False
 
-
-
-
+from rest_framework.exceptions import ValidationError
+from authapp.models import BaseIdeinerUser
+from rest_framework import serializers
 
 class IdeaViewSet(AbstractViewSet):
     http_method_names = ('post', 'get', 'put', 'delete')  # ('patch', 'get')
     permission_classes = (permissions.AllowAny,) # IsAuthenticated AllowAny
     # queryset = models.Idea.objects.all()
     serializer_class = IdeaSerializer
+    
+
 
     def get_queryset(self):  
         return models.Idea.objects.all() # получаем все временно

@@ -10,15 +10,24 @@ function NewIdea(props) {
  
 
     function handleSubmit(e){
-        const autor = JSON.parse(localStorage.getItem('auth'))
-        const data = {
-            autor: autor.user.username,
-            title: titleInputRef.current.value,
-            rubrics: rubric,
-            preview: previewInputRef.current.value,
-            body: bodyInputRef.current.value,
-        }
-        axios.post("http://127.0.0.1:8000/api/ideas/", data)
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        console.log('formData')
+        const autor_id = JSON.parse(localStorage.getItem('auth'))
+        console.log(autor_id)
+        formData.append('autor_id', autor_id.user.public_id)
+        console.log(formData)
+        fetch('http://127.0.0.1:8000/api/ideas/', { method: form.method, body: formData });
+        // You can generate a URL out of it, as the browser does by default:
+        console.log(new URLSearchParams(formData).toString());
+        // You can work with it as a plain object.
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson); // (!) This doesn't include multiple select values
+        // Or you can get an array of name-value pairs.
+        console.log([...formData.entries()]);
+        
+       
     
     
     }
@@ -30,7 +39,9 @@ function NewIdea(props) {
                 <div className="mb-3">
                     <form 
                         id="new_idea-form"
-                        onSubmit={handleSubmit}>
+                        onSubmit={handleSubmit}
+                        method="post"
+                        >
 
                         <div className="container">
 
@@ -43,7 +54,7 @@ function NewIdea(props) {
 
                                 <div className="col">
                                     <label className="form-label">Рубрика</label>
-                                    <select className="form-select form-select" name="rubrics" value={rubric} onChange={e => { setRubric(e)}} id="">
+                                    <select className="form-select form-select" name="rubrics" onChange={e => { setRubric(e)}} id="">
                                         <option selected value="Python">Python</option>
                                         <option value="JS">JS</option>
                                         <option value="Ещё что-то">Ещё что-то</option>

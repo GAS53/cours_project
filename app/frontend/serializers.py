@@ -13,6 +13,7 @@ from rest_framework.exceptions import ValidationError
 from backend import models
 from authapp.models import BaseIdeinerUser
 from django.conf import settings
+from rest_framework.mixins import CreateModelMixin
 
 
 # абстрактный базовый сериализатор
@@ -22,7 +23,13 @@ class AbstractSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
     updated = serializers.DateTimeField(read_only=True)
 
-
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        # kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+    
+   
+    
 
     class Meta:
         abstract = True
@@ -39,23 +46,21 @@ class UserSerializer(AbstractSerializer):
         representation = super().to_representation(instance)
         print('representation')
         print(representation)
-        if not representation['avatar']:
-            representation['avatar'] = settings.DEFAULT_AUTO_FIELD
-            return representation
-        if settings.DEBUG: # debug enabled for dev
-            request = self.context.get('request')
-            representation['avatar'] = request.build_absolute_uri(representation['avatar'])
+        # if not representation['avatar']:
+        #     representation['avatar'] = settings.DEFAULT_AUTO_FIELD
+        #     return representation
+        # if settings.DEBUG: # debug enabled for dev
+        #     request = self.context.get('request')
+        #     representation['avatar'] = request.build_absolute_uri(representation['avatar'])
         return representation
 
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        print(f'dddddddddddddddddddddddd {data}')
         refresh = self.get_token(self.user)
         data['user'] = UserSerializer(self.user).data
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
-        print(f'ddd {data}')
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
         return data
@@ -91,12 +96,35 @@ class RegisterSerializer(UserSerializer):
 
 
 class IdeaSerializer(AbstractSerializer):
-    liked = serializers.SerializerMethodField()
-    likes_count = serializers.SerializerMethodField()
+    # liked = serializers.SerializerMethodField()
+    # likes_count = serializers.SerializerMethodField()
+    autor_id = serializers.UUIDField()
+    
+    def get_autor_id(self, instance):
+        print('instance')
+        print(instance)
+        return instance.user.autor_id(instance)
+
+    def validate_autor(self, value):
+        if self.context["request"].user != value:
+            raise ValidationError("Вы не являетесь создателем этой идеи")
+        return value
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        print('rep')
+        print(rep)
+        autor = BaseIdeinerUser.objects.get_object_by_public_id(rep["autor_id"])
+        print(autor)
+        rep["autor"] = UserSerializer(autor).data
+        return rep
+
+    def get_serializer_class(self):
+        return IdeaSerializer
 
     class Meta:
         model = models.Idea
-        fields = ['autor', 'title', 'rubrics', 'created', 'preview', 'body', 'liked', 'likes_count', 'created', 'updated']
+        fields = ['public_id', 'title', 'rubrics', 'created', 'preview', 'body', 'created', 'updated', 'autor_id'] # 'likes_count'
         read_only_fields = ["edited"]
 
     def get_queryset(self):
@@ -110,21 +138,23 @@ class IdeaSerializer(AbstractSerializer):
     def create(self, request, *args, **kwargs):
         print('request.data')
         print(request)
-        serializer = self.get_serializer(data=request.data) # data=request.data т.к передаю не полноценный запрос
+        serializer = self.get_serializer(data=request) # data=request.data т.к передаю не полноценный запрос
         
         print('request.data error')
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        # self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def get_liked(self, instance):
-        request = self.context.get('request', None)
-        if request is None or request.user.is_anonymous:
-            return False
-        return request.user.has_liked(instance)
+    # def get_liked(self, instance):
+    #     request = self.context.get('request', None)
+    #     if request is None or request.user.is_anonymous:
+    #         return False
+    #     return request.user.has_liked(instance)
     
-    def get_likes_count(self, instance):
-        return instance.liked_by.count()
+    # def get_likes_count(self, instance):
+    #     print('instance')
+    #     print(instance)
+    #     return instance.liked_by.count()
 
 
 class FeedbackSerializer(AbstractSerializer):

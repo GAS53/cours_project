@@ -10,7 +10,10 @@ function Main() {
 
     useEffect(() => {
         axios.get("http://127.0.0.1:8000/api/ideas/")
-        .then(res => setIdeas(res.data.results))
+        
+        .then({res} => return (
+            console.log(res),
+            setIdeas(res.data.results)))
       }, [setIdeas]);
 
 
