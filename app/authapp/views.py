@@ -21,7 +21,7 @@ def login(request):
             """ тут програма при авторизации перемещает в кабинет. это тестовая ссылка, её можно изменить на другую,
             например, главную страницу """
 
-            return main(request)
+            return HttpResponseRedirect(reverse("backend:index"))
 
     content = {"title": title, "login_form": login_form}
     return render(request, "authapp/login.html", content)
