@@ -96,65 +96,7 @@ class RegisterSerializer(UserSerializer):
 
 
 class IdeaSerializer(AbstractSerializer):
-    # liked = serializers.SerializerMethodField()
-    # likes_count = serializers.SerializerMethodField()
-    autor_id = serializers.UUIDField()
-    
-    def get_autor_id(self, instance):
-        print('instance')
-        print(instance)
-        return instance.user.autor_id(instance)
 
-    def validate_autor(self, value):
-        if self.context["request"].user != value:
-            raise ValidationError("Вы не являетесь создателем этой идеи")
-        return value
-    
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        print('rep')
-        print(rep)
-        autor = BaseIdeinerUser.objects.get_object_by_public_id(rep["autor_id"])
-        print(autor)
-        rep["autor"] = UserSerializer(autor).data
-        return rep
-
-    def get_serializer_class(self):
-        return IdeaSerializer
-
-    class Meta:
-        model = models.Idea
-        fields = ['public_id', 'title', 'rubrics', 'created', 'preview', 'body', 'created', 'updated', 'autor_id'] # 'likes_count'
-        read_only_fields = ["edited"]
-
-    def get_queryset(self):
-        return models.Idea.objects.all()
-    
-    def get_object(self):
-        obj = models.Idea.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def create(self, request, *args, **kwargs):
-        print('request.data')
-        print(request)
-        serializer = self.get_serializer(data=request) # data=request.data т.к передаю не полноценный запрос
-        
-        print('request.data error')
-        serializer.is_valid(raise_exception=True)
-        # self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    # def get_liked(self, instance):
-    #     request = self.context.get('request', None)
-    #     if request is None or request.user.is_anonymous:
-    #         return False
-    #     return request.user.has_liked(instance)
-    
-    # def get_likes_count(self, instance):
-    #     print('instance')
-    #     print(instance)
-    #     return instance.liked_by.count()
 
 
 class FeedbackSerializer(AbstractSerializer):

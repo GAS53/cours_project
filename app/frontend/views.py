@@ -142,45 +142,9 @@ from authapp.models import BaseIdeinerUser
 from rest_framework import serializers
 
 class IdeaViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')  # ('patch', 'get')
-    permission_classes = (permissions.AllowAny,) # IsAuthenticated AllowAny
-    # queryset = models.Idea.objects.all()
-    serializer_class = IdeaSerializer
-    
 
 
-    def get_queryset(self):  
-        return models.Idea.objects.all() # получаем все временно
-        # if self.request.user.is_superuser:
-        #     return models.Idea.objects.all()
-        # return models.Idea.objects.exclude(is_superuser=True)
-    
-    def get_object(self):  # получаем один экземпляр
-        obj = models.Idea.objects.get_object_by_public_id(self.kwargs['pk'])
-        # self.check_object_permissions(self.request, obj)
-        return obj
-    
-    def update(self, instance, validated_data):
-        if not instance.edited:
-            validated_data['edited'] = True
-            instance = super().update(instance, validated_data)
-            return instance
-        
-    @action(methods=['post'], detail=True)
-    def like(self, request, *args, **kwargs):
-        post = self.get_object()
-        user = self.request.user
-        user.like(post)
-        serializer = self.serializer_class(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['post'], detail=True)
-    def remove_like(self, request, *args, **kwargs):
-        post = self.get_object()
-        user = self.request.user
-        user.remove_like(post)
-        serializer = self.serializer_class(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class FeedbackViewSet(AbstractViewSet):
