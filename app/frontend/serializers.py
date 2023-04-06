@@ -14,6 +14,7 @@ from backend import models
 from authapp.models import BaseIdeinerUser
 from django.conf import settings
 from rest_framework.mixins import CreateModelMixin
+from backend import models as backend
 
 
 # абстрактный базовый сериализатор
@@ -23,14 +24,6 @@ class AbstractSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
     updated = serializers.DateTimeField(read_only=True)
 
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        # kwargs['context'] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
-    
-   
-    
-
     class Meta:
         abstract = True
 
@@ -38,7 +31,7 @@ class UserSerializer(AbstractSerializer):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ['username', 'first_name', 'surname', 'email', 'age', 'password', 'is_superuser', 'public_id', 'avatar']
+        fields = ['login', 'first_name', 'last_name', 'email', 'age', 'password', 'is_superuser', 'public_id', 'avatar']
         read_only_field = ['is_active']
 
 
@@ -85,18 +78,56 @@ class RegisterSerializer(UserSerializer):
     
     class Meta:
         model = BaseIdeinerUser
-        fields = ['id', 'email', 'username',
-            'first_name', 'surname', 'password']
+        fields = ['id', 'email', 'login',
+            'first_name', 'last_name', 'password']
         
     def create(self, validated_data):
         return BaseIdeinerUser.objects.create_user(**validated_data)
 
+class RubricSerializer(AbstractSerializer):
+   
+    class Meta:
+        model = backend.Rubric
+        fields = ['id', 'rubirc_name']
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        return rep
+    
+    def update(self, instance, validated_data):
+        if not instance.edited:
+            validated_data['edited'] = True
+        instance = super().update(instance,  validated_data)
+        return instance
+
+
+
+
 
 # сериализаторы основных таблиц
-
+from backend.models import Idea
 
 class IdeaSerializer(AbstractSerializer):
+    autor = serializers.SlugRelatedField(queryset=BaseIdeinerUser.objects.all(), slug_field='public_id')
+    rubric = serializers.SlugRelatedField(queryset = models.Rubric.objects.all(), slug_field='public_id')
+    
+    class Meta:
+        model = backend.Idea
+        fields = ['id', 'autor', 'title', 'rubric', 'preview', 'body']
 
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["rubric"] = RubricSerializer().data
+        rep["autor"] = UserSerializer().data
+        return rep
+    
+    def update(self, instance, validated_data):
+        if not instance.edited:
+            validated_data['edited'] = True
+        instance = super().update(instance,  validated_data)
+        return instance
+        
 
 
 class FeedbackSerializer(AbstractSerializer):
@@ -128,12 +159,13 @@ class FeedbackSerializer(AbstractSerializer):
         return instance
 
 
-class JoinedUsersSerializer(AbstractSerializer):
+class JoinedUserSerializer(AbstractSerializer):
     class Meta:
-        model = models.JoinedUsers
-        fields = ['idea', 'autor']
+        model = models.JoinedUser
+        fields = ['id', 'idea', 'user']
 
 class LikesSerializer(AbstractSerializer):
     class Meta:
-        model = models.LikesToIdeas
-        fields = ['idea', 'autor']
+        model = models.LikesToIdea
+        fields = ['id', 'idea', 'autor']
+

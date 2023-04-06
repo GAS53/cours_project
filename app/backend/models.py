@@ -9,6 +9,10 @@ from django.http import Http404
 from django.contrib.auth.validators import UnicodeUsernameValidator, ASCIIUsernameValidator
 from rest_framework.response import Response
 
+
+from authapp.models import BaseIdeinerUser
+
+
 # Базовые абстрактные менеджер и таблица
 
 class AbstractManager(models.Manager):
@@ -39,7 +43,7 @@ class DataTimeModel(models.Model):
     created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, editable=False)
     updated = models.DateTimeField(verbose_name='Дата изменения', auto_now=True, editable=False)
     deleted = models.BooleanField(verbose_name='Запись удалена', default=False)
-    objects = AbstractManager()
+
 
 
     def delete(self, *args, **kwargs):
@@ -47,24 +51,34 @@ class DataTimeModel(models.Model):
         self.save()
 
     class Meta:
-        # '-' говорит об обратной сортировке
-        ordering = ('-created',)
-        # важный флаг для исключения дублирования
-        abstract = True
+        ordering = ('-created',)  # '-' говорит об обратной сортировке
+        abstract = True  # важный флаг для исключения дублирования
 
 
 
+
+class Rubric(DataTimeModel):
+    rubirc_name = models.CharField(verbose_name='Название рубрики', max_length=36)
+    
+    class Meta:
+        verbose_name = 'Рубрика'
+        verbose_name_plural = 'Рубрики'
+
+
+    def __str__(self):
+        return f'{self.rubirc_name}'
 
 
 class Idea(DataTimeModel):
-    autor = models.CharField(verbose_name='Никнейм', max_length=22)
+    autor = models.ForeignKey(BaseIdeinerUser, on_delete=models.CASCADE)
+    rubric = models.ForeignKey(Rubric, on_delete=models.DO_NOTHING)
+
     title = models.CharField(verbose_name='Заголовок', max_length=255)
-    rubrics = models.CharField(verbose_name='Рубрика', max_length=255)  # тут надо подумать
     preview = models.CharField(verbose_name='Описание', max_length=1000)
     body = models.TextField(verbose_name='Содержание')
 
     def __str__(self) -> str:
-        return f'{self.autor} {self.title} {self.rubrics}'
+        return f'{self.autor} {self.title} {self.rubric}'
 
 
 class Meta:
@@ -88,12 +102,13 @@ class Feedback(DataTimeModel):
     )
     
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE)
+    liker = models.ManyToManyField(BaseIdeinerUser)
     rating = models.SmallIntegerField(verbose_name='Рейтинг', choices=RATINGS, default=RATING_FIVE)
     feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
 
     class Meta:
         verbose_name = 'отзыв'
-        verbose_name_plural = 'отзовы'
+        verbose_name_plural = 'отзывы'
 
     def __str__(self) -> str:
         return f'Отзыв на {self.idea.title} от {self.idea.autor}'
@@ -102,27 +117,17 @@ class Feedback(DataTimeModel):
 """ присоеденённые к проектам пользователи """
 
 
-class JoinedUsers(DataTimeModel):
+class JoinedUser(DataTimeModel):
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE)
-    autor = models.CharField(verbose_name='Никнейм', max_length=22, default="")
+    user = models.ManyToManyField(BaseIdeinerUser)
 
     def __str__(self) -> str:
-        return f'{self.autor} присоединился к {self.idea.title}'
+        return f'{self.user} присоединился к {self.idea.title}'
 
 
-class LikesToIdeas(DataTimeModel):
+class LikesToIdea(DataTimeModel):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE, verbose_name='Идея')
-    autor = models.CharField(verbose_name='Никнейм', max_length=22, default="")
+    autor = models.ForeignKey(BaseIdeinerUser, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f'{self.autor} поставил лайк на {self.idea.title}'
-
-
-""" рубрики """
-
-
-class Rubrics():
-    idea = models.ForeignKey(Idea, on_delete=models.CASCADE, verbose_name='Идея')
-
-    def __str__(self) -> str:
-        return f'{self.idea.title}, {self.idea.rubrics}. {self.idea.rubrics}'

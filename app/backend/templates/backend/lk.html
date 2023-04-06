@@ -12,7 +12,7 @@
                 <div class="col-4">
                     <img src="https://img.freepik.com/free-vector/mysterious-mafia-man-smoking-cigarette_52683-34828.jpg?w=826&t=st=1678618018~exp=1678618618~hmac=ea416d598467ae43cc431081515e0bb0a25e41cb22385a045ec12ca347842f9a"
                         class="img-fluid img-thumbnail rounded" alt="Аватар">
-                    <h3>{{ request.user.username }}</h3>
+                    <h3>{{ request.user.login }}</h3>
                 </div>
 
                 <!-- Данные -->
@@ -30,7 +30,7 @@
                     <div class="row justify-content-center align-items-center g-2">
                         <div class="col">
                             <label class="form-label">Имя</label>
-                            <textarea class="lead" name="username" placeholder="{{ request.user.username }}"></textarea>
+                            <textarea class="lead" name="login" placeholder="{{ request.user.login }}"></textarea>
 
                         </div>
                         <div class="col">

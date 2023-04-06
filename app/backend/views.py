@@ -1,11 +1,12 @@
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect, render
-from .models import Idea, Feedback, JoinedUsers, LikesToIdeas
+from .models import Idea, Feedback
 from authapp.models import BaseIdeinerUser
 from django.contrib.auth.decorators import user_passes_test
 from rest_framework.permissions import IsAuthenticated, BasePermission
 
+from backend.models import JoinedUser
 class Temp(TemplateView):
     template_name = 'backend/index.html'
 
@@ -50,11 +51,11 @@ def lk_edit(request):  # изменение профиля через форму
 
     if request.method == 'POST':
 
-        surname = request.user.surname
+        surname = request.user.first_name
         user = BaseIdeinerUser.objects.filter(surname=surname).first()
 
-        if request.POST['username']: user.username = request.POST['username']
-        if request.POST['surname']: user.surname = request.POST['surname']
+        if request.POST['login']: user.login = request.POST['login']
+        if request.POST['first_name']: user.first_name = request.POST['first_name']
         if request.POST['email']: user.email = request.POST['email']
         if request.POST['age']: user.age = request.POST['age']
 
@@ -134,7 +135,7 @@ def my_ideas(request):
 def idea_add(request):  # добавление идеи через форму
 
     if request.method == 'POST':
-        username = request.user.surname
+        login = request.user.surname
 
         title = request.POST['title']
         preview = request.POST['preview']
@@ -147,7 +148,7 @@ def idea_add(request):  # добавление идеи через форму
 
         if title and rubrics and preview and body:  # проверка наличия данных во всех полях
 
-            new_idea = Idea.objects.create(autor=username, title=title, rubrics=rubrics,
+            new_idea = Idea.objects.create(autor=login, title=title, rubrics=rubrics,
                                            preview=preview, body=body)
             new_idea.save()
 
@@ -160,7 +161,7 @@ def idea_card(request, pk): # карта идеи
     title = "Идея"
     idea = Idea.objects.filter(pk=pk).first()
     feedbacks = Feedback.objects.filter(idea=idea)
-    joined_users = JoinedUsers.objects.filter(idea=idea)
+    joined_users = JoinedUser.objects.filter(idea=idea)
     likes = LikesToIdeas.objects.filter(idea=idea)
 
     content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 
@@ -276,10 +277,10 @@ def joined_user_add(request, pk):  # добавление пользовател
     idea = Idea.objects.filter(pk=pk).first()
     autor = request.user.surname
 
-    if JoinedUsers.objects.filter(idea=idea, autor=autor):
+    if JoinedUser.objects.filter(idea=idea, autor=autor):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-    new_joined_user = JoinedUsers.objects.create(idea=idea, autor=autor)
+    new_joined_user = JoinedUser.objects.create(idea=idea, autor=autor)
     new_joined_user.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -290,7 +291,7 @@ def joined_user_delete(request, pk):  # удаление пользовател�
     idea = Feedback.objects.filter(pk=pk).first()
     autor = request.user.surname
 
-    joined_user = JoinedUsers.objects.filter(idea=idea, autor=autor).first()
+    joined_user = JoinedUser.objects.filter(idea=idea, autor=autor).first()
     joined_user.delete()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -302,9 +303,9 @@ def joined_user_delete(request, pk):  # удаление пользовател�
 def like_add(request, pk): # добавление лайка на проект через кнопку
 
     idea = Idea.objects.filter(pk=pk).first()
-    autor = request.user.username
+    autor = request.user.login
 
-    new_like = LikesToIdeas.objects.create(idea=idea, autor=autor)
+    new_like = LikesToIdea.objects.create(idea=idea, autor=autor)
     new_like.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -315,7 +316,7 @@ def like_delete(request, pk): # удаление лайка на проект ч
     idea = Feedback.objects.filter(pk=pk).first()
     autor = request.user.nickname
 
-    like = LikesToIdeas.objects.filter(idea=idea, autor=autor).first()
+    like = LikesToIdea.objects.filter(idea=idea, autor=autor).first()
     like.delete()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
