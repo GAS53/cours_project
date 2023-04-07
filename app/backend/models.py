@@ -2,13 +2,9 @@ from django.db import models
 
 import uuid
 
-from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.contrib.auth.validators import UnicodeUsernameValidator, ASCIIUsernameValidator
-from rest_framework.response import Response
-
 
 from authapp.models import BaseIdeinerUser
 
@@ -43,7 +39,6 @@ class DataTimeModel(models.Model):
     created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, editable=False)
     updated = models.DateTimeField(verbose_name='Дата изменения', auto_now=True, editable=False)
     deleted = models.BooleanField(verbose_name='Запись удалена', default=False)
-
 
 
     def delete(self, *args, **kwargs):

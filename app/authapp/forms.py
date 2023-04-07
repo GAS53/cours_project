@@ -12,7 +12,7 @@ class BaseIdeinerUserLoginForm(AuthenticationForm):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ("login", "password")
+        fields = ("email", "password")
 
 
 class BaseIdeinerUserRegisterForm(UserCreationForm):

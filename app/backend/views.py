@@ -50,9 +50,7 @@ def lk(request):  # профиль
 def lk_edit(request):  # изменение профиля через форму
 
     if request.method == 'POST':
-
-        surname = request.user.first_name
-        user = BaseIdeinerUser.objects.filter(surname=surname).first()
+        user = BaseIdeinerUser.objects.filter(id=request.user.id).first()
 
         if request.POST['login']: user.login = request.POST['login']
         if request.POST['first_name']: user.first_name = request.POST['first_name']
@@ -122,9 +120,8 @@ def search(request):
 @user_passes_test(lambda u: u.is_authenticated)
 def my_ideas(request):
     title = "Мои идели"
-    autor = request.user.surname
 
-    ideas = GenIdeasList(Idea.objects.filter(autor=autor))
+    ideas = GenIdeasList(Idea.objects.filter(id=request.user.id))
 
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
@@ -135,7 +132,7 @@ def my_ideas(request):
 def idea_add(request):  # добавление идеи через форму
 
     if request.method == 'POST':
-        login = request.user.surname
+        login = request.user.last_name
 
         title = request.POST['title']
         preview = request.POST['preview']
@@ -162,7 +159,7 @@ def idea_card(request, pk): # карта идеи
     idea = Idea.objects.filter(pk=pk).first()
     feedbacks = Feedback.objects.filter(idea=idea)
     joined_users = JoinedUser.objects.filter(idea=idea)
-    likes = LikesToIdeas.objects.filter(idea=idea)
+    likes = LikesToIdea.objects.filter(idea=idea)
 
     content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 
                "likes": likes, "media_url": settings.MEDIA_URL}
@@ -275,7 +272,7 @@ def feedback_delete(request, pk):  # удаление отзыва при наж
 def joined_user_add(request, pk):  # добавление пользователя в проект через форму
 
     idea = Idea.objects.filter(pk=pk).first()
-    autor = request.user.surname
+    autor = request.user.last_name
 
     if JoinedUser.objects.filter(idea=idea, autor=autor):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -289,7 +286,7 @@ def joined_user_add(request, pk):  # добавление пользовател
 def joined_user_delete(request, pk):  # удаление пользователя из проекта при нажатии на кнопку
 
     idea = Feedback.objects.filter(pk=pk).first()
-    autor = request.user.surname
+    autor = request.user.last_name
 
     joined_user = JoinedUser.objects.filter(idea=idea, autor=autor).first()
     joined_user.delete()
@@ -298,7 +295,7 @@ def joined_user_delete(request, pk):  # удаление пользовател�
 
 
 """ Другие пользователи могут поставить лпйк к идее """
-
+from backend.models import LikesToIdea
 
 def like_add(request, pk): # добавление лайка на проект через кнопку
 

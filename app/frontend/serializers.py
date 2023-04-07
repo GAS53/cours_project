@@ -2,18 +2,14 @@ from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
-from rest_framework import filters
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+
 from rest_framework import serializers
-from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
-from backend import models
+
 from authapp.models import BaseIdeinerUser
 from django.conf import settings
-from rest_framework.mixins import CreateModelMixin
+
 from backend import models as backend
 
 
@@ -37,8 +33,7 @@ class UserSerializer(AbstractSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        print('representation')
-        print(representation)
+
         # if not representation['avatar']:
         #     representation['avatar'] = settings.DEFAULT_AUTO_FIELD
         #     return representation
@@ -109,7 +104,7 @@ from backend.models import Idea
 
 class IdeaSerializer(AbstractSerializer):
     autor = serializers.SlugRelatedField(queryset=BaseIdeinerUser.objects.all(), slug_field='public_id')
-    rubric = serializers.SlugRelatedField(queryset = models.Rubric.objects.all(), slug_field='public_id')
+    rubric = serializers.SlugRelatedField(queryset = backend.Rubric.objects.all(), slug_field='public_id')
     
     class Meta:
         model = backend.Idea
@@ -132,7 +127,7 @@ class IdeaSerializer(AbstractSerializer):
 
 class FeedbackSerializer(AbstractSerializer):
     author = serializers.SlugRelatedField(queryset=BaseIdeinerUser.objects.all(), slug_field='public_id')
-    idea = serializers.SlugRelatedField(queryset = models.Idea.objects.all(), slug_field='public_id')
+    idea = serializers.SlugRelatedField(queryset = backend.Idea.objects.all(), slug_field='public_id')
     
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -141,7 +136,7 @@ class FeedbackSerializer(AbstractSerializer):
         return rep
     
     class Meta:
-        model = models.Feedback
+        model = backend.Feedback
         fields = ['id', 'author', 'idea', 'rating', 'feedback', 'created', 'updated']
         read_only_fields = ["edited"]
 
@@ -161,11 +156,11 @@ class FeedbackSerializer(AbstractSerializer):
 
 class JoinedUserSerializer(AbstractSerializer):
     class Meta:
-        model = models.JoinedUser
+        model = backend.JoinedUser
         fields = ['id', 'idea', 'user']
 
 class LikesSerializer(AbstractSerializer):
     class Meta:
-        model = models.LikesToIdea
+        model = backend.LikesToIdea
         fields = ['id', 'idea', 'autor']
 
