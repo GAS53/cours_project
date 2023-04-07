@@ -194,7 +194,7 @@ class RubricViewSet(AbstractViewSet):
         return Rubric.objects.all() 
         
     def get_object(self):
-        obj = Rubric.objects.get_object_by_public_id(self.kwargs['public_id'])
+        obj = Rubric.objects.get_object_by_public_id(self.kwargs['pk'])
         self.check_object_permissions(self.request, obj)
         return obj
     
@@ -243,7 +243,7 @@ class FeedbackViewSet(AbstractViewSet):
 class JoinedUserViewSet(AbstractViewSet):
     http_method_names = ('post', 'get', 'put', 'delete')
     permission_classes = (AllowAny,)  # UserPermission
-    serializer_class =  fr_serializers.IdeaSerializer
+    serializer_class =  fr_serializers.JoinedUserSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -271,7 +271,7 @@ class JoinedUserViewSet(AbstractViewSet):
 class LikesViewSet(AbstractViewSet):
     http_method_names = ('post', 'get', 'put', 'delete')
     permission_classes = (AllowAny,)  # UserPermission
-    serializer_class = fr_serializers.IdeaSerializer
+    serializer_class = fr_serializers.LikesSerializer
 
 
     def create(self, request, *args, **kwargs):
