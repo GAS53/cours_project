@@ -37,6 +37,9 @@ function Title({isVisable, togleVisable}) {
                                     <Link to="lk/" className="nav-link">Личный кабинет</Link> 
                                 </li>
                                 <li className="nav-item">
+                                    <Link to="new/" className="nav-link">Добавить идею</Link> 
+                                </li>
+                                <li className="nav-item">
                                     <a className="nav-link" onClick={logout} href="/" tabIndex="-1" aria-disabled="true">Выход</a>
                                 </li>
                             </div>

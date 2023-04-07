@@ -1,62 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { RowTwoValues } from "./UI/rows/RowTwoValues";
 import { getUserInfo } from "./Auth";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
 
 
-const Lk = ({ user }) => {
-    const userInfo = getUserInfo()
-    console.log('userInfo')
-    console.log(userInfo)
-    // const elements = [
-    //     [
-    //         {
-    //             title: "Никнейм",
-    //             data: user.nickname,
+const Lk = (props) => {
+    const [im, setIm] = useState([])
 
-    //         },
-    //         {
-    //             title: "Дата регистраци",
-    //             data: user.registrationdate,
-    //         }
-    //     ],
-    //     [
-    //         {
-    //             title: "Имя",
-    //             data: user.username,
 
-    //         },
-    //         {
-    //             title: "Фамилия",
-    //             data: user.surname,
-    //         }
-    //     ],
-    //     [
-    //         {
-    //             title: "Адрес почты",
-    //             data: user.email,
+    useEffect(() => {
+        const auth = JSON.parse(localStorage.getItem('auth'))
+        console.log('111111')
+        console.log(auth)
+        const user = auth.user
+        if (auth) {
 
-    //         },
-    //         {
-    //             title: "Возраст",
-    //             data: user.age,
-    //         }
-    //     ]
-    // ];
+            const data = [
+                    [ { title: "Никнейм", data: user.username, },],
+                    [ { title: "Имя", data: user.first_name,},],
+                    [ { title: "Фамилия",  data: user.surname, } ],
+                    [ { title: "Адрес почты",  data: user.email,},],
+                    [ { title: "Возраст",  data: user.age, } ],
+                ]
+            setIm(data)
+        }
+       
+      }, [setIm]);
+
 
     return (
         <div className="container-md mt-5">
             <div className="row justify-content-center align-items-top">
 
                 <div className="col-4">
-                    <img src={user.avatar}
+                    <img src={im.avatar}
                         className="img-fluid img-thumbnail rounded" alt="Аватар" />
-                    <h3>{user.nickname}</h3>
+                    <h3>{im.username}</h3>
                 </div>
-
                 <div className="col-8">
-                    {/* {
-                        elements.map((values, index) => <RowTwoValues values={values} key={index}/>)
-                    } */}
+                    {
+                        im.map((values, index) => <RowTwoValues values={values} key={index}/>)
+                    }
                 </div>
             </div>
         </div>

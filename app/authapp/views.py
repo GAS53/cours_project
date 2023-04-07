@@ -12,9 +12,9 @@ def login(request):
 
     login_form = BaseIdeinerUserLoginForm(data=request.POST or None)
     if request.method == "POST" and login_form.is_valid():
-        username = request.POST["username"]
+        login = request.POST["login"]
         password = request.POST["password"]
-        user = auth.authenticate(username=username, password=password)
+        user = auth.authenticate(login=login, password=password)
         if user and user.is_active:
             auth.login(request, user)
 
@@ -59,7 +59,7 @@ def register(request):
 def cabinet(request):
     title = "Кабинет"
 
-    name = request.user.username
+    name = request.user.login
 
     content = {"title": title, "name": name}
     return render(request, "authapp/cabinet.html", content)
