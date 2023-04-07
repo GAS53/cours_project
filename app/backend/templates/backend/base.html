@@ -33,16 +33,18 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                             aria-expanded="false">Мой кабинет</a>
                         <ul class="dropdown-menu">
+                            {% if user.is_authenticated %}
                             <li><a class="dropdown-item" href="{% url 'backend:lk' %}">Профиль</a></li>
                             <li><a class="dropdown-item" href="{% url 'backend:my_ideas' %}">Мои идеи</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            {% if user.is_authenticated %}
                                 <li><a class="dropdown-item" href="{% url 'authapp:logout' %}">Выход</a></li>
-                            {% endif %}
                             {% if user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'backend:admin' %}">Админка</a></li>
+                            {% endif %}
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'authapp:login' %}">Вход</a></li>
                             {% endif %}
                         </ul>
                     </li>

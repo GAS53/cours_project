@@ -1,7 +1,5 @@
 .python-version
 /app/authapp/__pycache__
-/app/authapp/migrations
-/app/backend/migrations
 /app/backend/__pycache__
 /app/config/__pycache__
 /app/frontend/__pycache__

@@ -21,7 +21,7 @@ def login(request):
             """ тут програма при авторизации перемещает в кабинет. это тестовая ссылка, её можно изменить на другую,
             например, главную страницу """
 
-            return main(request)
+            return HttpResponseRedirect(reverse("backend:index"))
 
     content = {"title": title, "login_form": login_form}
     return render(request, "authapp/login.html", content)
@@ -40,7 +40,15 @@ def register(request):
         
         if register_form.is_valid():
             register_form.save()
-            return HttpResponseRedirect(reverse("authapp:login"))
+            print(request.POST)
+
+            username = request.POST["email"]
+            password = request.POST["password1"]
+            user = auth.authenticate(username=username, password=password)
+
+            auth.login(request, user)
+
+            return HttpResponseRedirect(reverse("backend:index"))
     else:
         register_form = BaseIdeinerUserRegisterForm()
 
