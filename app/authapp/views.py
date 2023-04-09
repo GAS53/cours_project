@@ -2,7 +2,8 @@ from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
-from backend.views import main
+
+
 
 from authapp.forms import BaseIdeinerUserEditForm, BaseIdeinerUserLoginForm, BaseIdeinerUserRegisterForm
 
@@ -12,9 +13,11 @@ def login(request):
 
     login_form = BaseIdeinerUserLoginForm(data=request.POST or None)
     if request.method == "POST" and login_form.is_valid():
-        username = request.POST["username"]
+        print('login_form')
+        print(login_form)
+        email = request.POST["username"]
         password = request.POST["password"]
-        user = auth.authenticate(username=username, password=password)
+        user = auth.authenticate(email=email, password=password)
         if user and user.is_active:
             auth.login(request, user)
 
@@ -42,9 +45,9 @@ def register(request):
             register_form.save()
             print(request.POST)
 
-            username = request.POST["email"]
+            email = request.POST["email"]
             password = request.POST["password1"]
-            user = auth.authenticate(username=username, password=password)
+            user = auth.authenticate(email=email, password=password)
 
             auth.login(request, user)
 
@@ -59,7 +62,7 @@ def register(request):
 def cabinet(request):
     title = "Кабинет"
 
-    name = request.user.username
+    name = request.user.login
 
     content = {"title": title, "name": name}
     return render(request, "authapp/cabinet.html", content)

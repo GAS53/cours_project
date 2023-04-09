@@ -110,7 +110,7 @@
 
                                     <a href="{% url 'backend:joined_user_add' item.idea.pk %}" style="display: block;">присоедениться к проекту</a>
 
-                                    {% if user.is_superuser or item.idea.autor == request.user.username %}
+                                    {% if user.is_superuser or item.idea.autor == request.user.login %}
                                     <a href="{% url 'backend:idea_delete' item.idea.pk %}">удалить</a>
                                     {% endif %}
                                     

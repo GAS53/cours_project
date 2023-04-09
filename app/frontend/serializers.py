@@ -2,16 +2,15 @@ from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
-from rest_framework import filters
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+
 from rest_framework import serializers
-from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
-from backend import models
+
 from authapp.models import BaseIdeinerUser
+from django.conf import settings
+
+from backend import models as backend
 
 
 # абстрактный базовый сериализатор
@@ -21,8 +20,6 @@ class AbstractSerializer(serializers.ModelSerializer):
     created = serializers.DateTimeField(read_only=True)
     updated = serializers.DateTimeField(read_only=True)
 
-
-
     class Meta:
         abstract = True
 
@@ -30,30 +27,28 @@ class UserSerializer(AbstractSerializer):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ['username', 'first_name', 'surname', 'email', 'age', 'password', 'is_superuser', 'public_id']
+        fields = ['login', 'first_name', 'last_name', 'email', 'age', 'password', 'is_superuser', 'public_id', 'avatar']
         read_only_field = ['is_active']
 
 
-    # def create(self, request, *args, **kwargs):
-    #     print('request.data')
-    #     print(request)
-    #     serializer = self.get_serializer(data=request.data) 
-    #     print('request.data error')
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-# регистрация и валидация
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # if not representation['avatar']:
+        #     representation['avatar'] = settings.DEFAULT_AUTO_FIELD
+        #     return representation
+        # if settings.DEBUG: # debug enabled for dev
+        #     request = self.context.get('request')
+        #     representation['avatar'] = request.build_absolute_uri(representation['avatar'])
+        return representation
 
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        print(f'dddddddddddddddddddddddd {data}')
         refresh = self.get_token(self.user)
         data['user'] = UserSerializer(self.user).data
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
-        print(f'ddd {data}')
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
         return data
@@ -78,56 +73,61 @@ class RegisterSerializer(UserSerializer):
     
     class Meta:
         model = BaseIdeinerUser
-        fields = ['id', 'email', 'username',
-            'first_name', 'surname', 'password']
+        fields = ['id', 'email', 'login',
+            'first_name', 'last_name', 'password']
         
     def create(self, validated_data):
         return BaseIdeinerUser.objects.create_user(**validated_data)
 
+class RubricSerializer(AbstractSerializer):
+   
+    class Meta:
+        model = backend.Rubric
+        fields = ['id', 'rubirc_name']
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        return rep
+    
+    def update(self, instance, validated_data):
+        if not instance.edited:
+            validated_data['edited'] = True
+        instance = super().update(instance,  validated_data)
+        return instance
+
+
+
+
 
 # сериализаторы основных таблиц
-
+from backend.models import Idea
 
 class IdeaSerializer(AbstractSerializer):
-    liked = serializers.SerializerMethodField()
-    likes_count = serializers.SerializerMethodField()
-
+    autor = serializers.SlugRelatedField(queryset=BaseIdeinerUser.objects.all(), slug_field='public_id')
+    rubric = serializers.SlugRelatedField(queryset = backend.Rubric.objects.all(), slug_field='public_id')
+    
     class Meta:
-        model = models.Idea
-        fields = ['autor', 'title', 'rubrics', 'created', 'preview', 'body', 'liked', 'likes_count', 'created', 'updated']
-        read_only_fields = ["edited"]
+        model = backend.Idea
+        fields = ['id', 'autor', 'title', 'rubric', 'preview', 'body']
 
-    def get_queryset(self):
-        return models.Idea.objects.all()
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["rubric"] = RubricSerializer().data
+        rep["autor"] = UserSerializer().data
+        return rep
     
-    def get_object(self):
-        obj = models.Idea.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def create(self, request, *args, **kwargs):
-        print('request.data')
-        print(request)
-        serializer = self.get_serializer(data=request.data) # data=request.data т.к передаю не полноценный запрос
+    def update(self, instance, validated_data):
+        if not instance.edited:
+            validated_data['edited'] = True
+        instance = super().update(instance,  validated_data)
+        return instance
         
-        print('request.data error')
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    def get_liked(self, instance):
-        request = self.context.get('request', None)
-        if request is None or request.user.is_anonymous:
-            return False
-        return request.user.has_liked(instance)
-    
-    def get_likes_count(self, instance):
-        return instance.liked_by.count()
 
 
 class FeedbackSerializer(AbstractSerializer):
     author = serializers.SlugRelatedField(queryset=BaseIdeinerUser.objects.all(), slug_field='public_id')
-    idea = serializers.SlugRelatedField(queryset = models.Idea.objects.all(), slug_field='public_id')
+    idea = serializers.SlugRelatedField(queryset = backend.Idea.objects.all(), slug_field='public_id')
     
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -136,7 +136,7 @@ class FeedbackSerializer(AbstractSerializer):
         return rep
     
     class Meta:
-        model = models.Feedback
+        model = backend.Feedback
         fields = ['id', 'author', 'idea', 'rating', 'feedback', 'created', 'updated']
         read_only_fields = ["edited"]
 
@@ -154,12 +154,13 @@ class FeedbackSerializer(AbstractSerializer):
         return instance
 
 
-class JoinedUsersSerializer(AbstractSerializer):
+class JoinedUserSerializer(AbstractSerializer):
     class Meta:
-        model = models.JoinedUsers
-        fields = ['idea', 'autor']
+        model = backend.JoinedUser
+        fields = ['id', 'idea', 'user']
 
 class LikesSerializer(AbstractSerializer):
     class Meta:
-        model = models.LikesToIdeas
-        fields = ['idea', 'autor']
+        model = backend.LikesToIdea
+        fields = ['id', 'idea', 'autor']
+

@@ -69,10 +69,10 @@
                 <!-- Кнопка входа в систему (модальное окно) -->
                 <div>
                     {% if user.is_superuser %}
-                        <label>вы вошли как админ {{user.username}}</label>
+                        <label>вы вошли как админ {{user.login}}</label>
                         <a class="nav-link" href="{% url 'authapp:logout' %}" tabindex="-1" aria-disabled="true">Выход</a>
                     {% elif user.is_authenticated %}
-                    <label>вы вошли как {{user.username}}</label>
+                    <label>вы вошли как {{user.login}}</label>
                         <a class="nav-link" href="{% url 'authapp:logout' %}" tabindex="-1" aria-disabled="true">Выход</a>
                     {% else %}
                     <a class="nav-link" href="{% url 'authapp:login' %}" tabindex="-1" aria-disabled="true">Вход</a>

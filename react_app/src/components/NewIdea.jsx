@@ -1,24 +1,35 @@
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import axios from "axios";
 
 function NewIdea(props) { 
-    const autorInputRef = useRef('testautor');
+    const [rubric, setRubric] = useState()
     const titleInputRef = useRef();
-    const rubricsInputRef = useRef();
     const previewInputRef = useRef();
     const bodyInputRef = useRef();
  
 
     function handleSubmit(e){
-        const data = {
-            // autor: autorInputRef.current.value,
-            autor: 'testautor',
-            title: titleInputRef.current.value,
-            rubrics: rubricsInputRef.current.value,
-            preview: previewInputRef.current.value,
-            body: bodyInputRef.current.value,
-        }
-        console.log(data)
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        console.log('formData')
+        const autor_id = JSON.parse(localStorage.getItem('auth'))
+        console.log(autor_id)
+        formData.append('autor_id', autor_id.user.public_id)
+        console.log(formData)
+        fetch('http://127.0.0.1:8000/api/ideas/', { method: form.method, body: formData });
+        // You can generate a URL out of it, as the browser does by default:
+        console.log(new URLSearchParams(formData).toString());
+        // You can work with it as a plain object.
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson); // (!) This doesn't include multiple select values
+        // Or you can get an array of name-value pairs.
+        console.log([...formData.entries()]);
+        
+       
+    
+    
     }
     return (
         <div className="container-md site-container">
@@ -28,20 +39,22 @@ function NewIdea(props) {
                 <div className="mb-3">
                     <form 
                         id="new_idea-form"
-                        onSubmit={handleSubmit}>
+                        onSubmit={handleSubmit}
+                        method="post"
+                        >
 
                         <div className="container">
 
                             <div className="row justify-content-center align-items-center g-2">
                                 
                                 <div className="col-8">
-                                    <label for="ideaName" className="form-label">Название идеи</label>
+                                    <label className="form-label">Название идеи</label>
                                     <input name="title" ref={titleInputRef} type="text" className="form-control" id="ideaName" placeholder="Название"/>
                                 </div>
 
                                 <div className="col">
-                                    <label for="" className="form-label">Рубрика</label>
-                                    <select className="form-select form-select" name="rubrics" ref={rubricsInputRef} id="">
+                                    <label className="form-label">Рубрика</label>
+                                    <select className="form-select form-select" name="rubrics" onChange={e => { setRubric(e)}} id="">
                                         <option selected value="Python">Python</option>
                                         <option value="JS">JS</option>
                                         <option value="Ещё что-то">Ещё что-то</option>
@@ -51,15 +64,15 @@ function NewIdea(props) {
 
                             <div className="row justify-content-center align-items-center g-2">
                                 <div className="col">
-                                    <label for="preview" className="form-label">Описание</label>
+                                    <label  className="form-label">Описание</label>
                                     <textarea name="preview"  ref={previewInputRef} type="text" className="form-control" id="preview"
                                         placeholder="Введите описание"></textarea>
                                 </div>
                             </div>
 
                             <div className="row justify-content-center align-items-center g-2 mb-3">
-                                <label for="preview" className="form-label">Содержание</label>
-                                <textarea name="body" ref={previewInputRef} type="text" className="form-control" id="preview"
+                                <label  className="form-label">Содержание</label>
+                                <textarea name="body" ref={bodyInputRef} type="text" className="form-control" id="preview"
                                     placeholder="Введите содержание"></textarea>
                             </div>
 

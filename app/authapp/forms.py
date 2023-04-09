@@ -12,7 +12,7 @@ class BaseIdeinerUserLoginForm(AuthenticationForm):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ("username", "password")
+        fields = ("email", "password")
 
 
 class BaseIdeinerUserRegisterForm(UserCreationForm):
@@ -24,7 +24,7 @@ class BaseIdeinerUserRegisterForm(UserCreationForm):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ("username", "first_name", "surname", "email", "password1", "password2", "avatar")
+        fields = ("login", "first_name", "last_name", "email", "password1", "password2", "avatar")
 
 
 class BaseIdeinerUserEditForm(UserChangeForm):
@@ -36,4 +36,4 @@ class BaseIdeinerUserEditForm(UserChangeForm):
 
     class Meta:
         model = BaseIdeinerUser
-        fields = ("username", "first_name", "surname", "email", "password", "avatar")
+        fields = ("login", "first_name", "last_name", "email", "password", "avatar")
