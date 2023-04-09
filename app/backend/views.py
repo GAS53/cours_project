@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect, render
-from .models import Idea, Feedback
+from .models import Idea, Feedback, Rubric
 from authapp.models import BaseIdeinerUser
 from django.contrib.auth.decorators import user_passes_test
 from rest_framework.permissions import IsAuthenticated, BasePermission
@@ -132,8 +132,6 @@ def my_ideas(request):
 def idea_add(request):  # добавление идеи через форму
 
     if request.method == 'POST':
-        login = request.user.last_name
-
         title = request.POST['title']
         preview = request.POST['preview']
         body = request.POST['body']
@@ -143,9 +141,14 @@ def idea_add(request):  # добавление идеи через форму
         except:
             rubrics = "Python"
 
+        # Затычка. Находит рубрику по названию или создает
+        rubric = Rubric.objects.filter(rubirc_name=rubrics).first()
+        if not rubric:
+            rubric = Rubric.objects.create(rubirc_name=rubrics)
+
         if title and rubrics and preview and body:  # проверка наличия данных во всех полях
 
-            new_idea = Idea.objects.create(autor=login, title=title, rubrics=rubrics,
+            new_idea = Idea.objects.create(autor=request.user, title=title, rubric=rubric,
                                            preview=preview, body=body)
             new_idea.save()
 
