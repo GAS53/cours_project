@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { getAuth, getIdea } from "./postService";
+import { getAuth, getIdea, connectToIdea } from "./postService";
 import { useNavigate } from "react-router-dom";
 
 
@@ -26,46 +26,15 @@ function OneIdea() {
             getIdea(idea_id)
                 .then(res => setOneIdea(res.data))
                 .catch(res => {alert(res)})
-        } else {
-            navigate( '/welcome/')
-        }
-        
-        // const fetchIdea = async () => {
-        //     const fetch_idea = await maxios.get(`http://127.0.0.1:8000/api/ideas/${idea_id}`, setTimeout(1000))
-        //     return fetch_idea
-        // }
-        // const fetchRubrics = async () => {
-        //     const fetch_rubrics = await maxios.get(`http://127.0.0.1:8000/api/rubrics/${oneIdea.rubric}`, setTimeout(1000))
-        //     return fetch_rubrics
-        // }
-        // const res_one = fetchIdea()
-        //     .then(res => setOneIdea(res.data))
-        //     // .catch(error => alert(error))
-        
-        // const res_one2 = fetchRubrics()
-        //     .then(res => setRubirc(res.data))
-            // .catch(error => alert(error))
-        // console.log('res_one')
-        // console.log(JSON.stringify(res_one.value))
-
-
+        } else { navigate( '/welcome/') }
         },[])
 
 
     function connectHandler(e) {
-        const res =JSON.parse( localStorage.getItem('auth'))
-        
-        if (oneIdea.joinUsers.indexOf(res.user.id) != -1) {
-            oneIdea.joinUsers.push(res.user.id)
-            maxios
-                .post(`http://127.0.0.1:8000/api/ideas/${idea_id}`, oneIdea, {"Content-Type": "application/json", })
-                .then(alert(`вы ${res.user.login} вступили в команду ${oneIdea.title}`))
-                .catch((error) => alert(`ошибка при добавлении пользователя  ${error.message}`))
-
-        } else {
-            alert(`вы ${res.user.login} уже состоите в команде ${oneIdea.title}`)
-        }
-        window.location.reload(false)
+        connectToIdea(idea_id)
+            .then(alert(`вы вступили в команду ${oneIdea.title}`))
+            .catch((error) => alert(`ошибка при добавлении пользователя  ${error.message}`))
+        // window.location.reload(false)
     }
 
     function likeHandler(e) {
@@ -207,6 +176,8 @@ function OneIdea() {
                                             </button>
                                           </h2>
                                           <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                            
+                                            
                                             <div className="accordion-body">
                                                <h3> Наша команда </h3>
                                                <div className="container-fluid">

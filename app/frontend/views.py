@@ -62,7 +62,7 @@ class LoginViewSet(AbstractViewSet):
 
 class OneIdeaViewSet(AbstractViewSet):
     serializer_class = fr_serializers.OneIdeaSerializer
-    permission_classes = (AllowAny,) # IsAuthenticated
+    permission_classes = (AllowAny,) # IsAuthenticated  исправить когда django примет токен
     http_method_names = ['get']
 
     def get_object(self):
@@ -71,8 +71,23 @@ class OneIdeaViewSet(AbstractViewSet):
         return obj
     
 
+class JoinToIdea(AbstractViewSet):
+    serializer_class = fr_serializers.LoginSerializer
+    permission_classes = (AllowAny,)   # IsAuthenticated  исправить когда django примет токен
+    http_method_names = ['patch']
 
+    def get_object(self, pk):
+        return bk_models.JoinedUser.objects.get(pk=pk)
 
+    def patch(self, request):
+        print('request')
+        print(request.data)
+        join_object = self.objects.get_object_by_public_id(request.data['pk'])
+        serializer = fr_serializers.JoinedUserSerializer(join_object, data=request.DATA, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(code=201, data=serializer.data)
+        return Response(code=400, data="неправильно заданы параметры, ошибка при серриализации")
 
 
 
@@ -203,6 +218,45 @@ class IdeaViewSet(AbstractViewSet):
         if self.instance:
             return self.instance.post
         return value
+
+
+
+
+class NewRubricViewSet(AbstractViewSet):
+    http_method_names = ('post',)
+    permission_classes = (AllowAny,)  # UserPermission !!!!!!!!!!!
+    serializer_class = fr_serializers.RubricSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        res = self.perform_create(serializer)
+        if res:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_304_NOT_MODIFIED)
+
+    def perform_create(self, serializer):
+        new_rubric = self.request.data.get("rubirc_name", None) # read data from request
+        preparate_qs =[val[-1] for val in bk_models.Rubric.objects.all().values_list()]
+        if new_rubric in preparate_qs:
+            return False
+        else:
+            serializer.save()
+            return True
+
+
+class AllRubricsViewSet(AbstractViewSet):
+    http_method_names = ('get',)
+    permission_classes = (AllowAny,)  # UserPermission !!!!!!!!!!!
+    serializer_class = fr_serializers.RubricSerializer
+
+
+    def get_queryset(self):
+        return bk_models.Rubric.objects.all()
+
+
 
 
 
