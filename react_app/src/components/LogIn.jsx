@@ -29,14 +29,16 @@ const LogIn = ({togleVisable}) => {
             refresh: res.data.refresh,
             user: res.data.user,
             email: data.email,
-            public_id: res.data.public_id,
+            id: res.data.id,
             }));
             navigate("/");
             console.log('login')
             console.log(res)}
             )
         .catch((err) => {
-                if (err.message) {setError(err.request.response);}
+                if (err.message) {
+                    alert('неверно введен email или пароль')
+                    setError(err.request.response);}
                 });
             }
 

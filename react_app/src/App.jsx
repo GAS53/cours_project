@@ -1,21 +1,20 @@
 import './styles/bootstrap.min.css';
 import './styles/styles.css';
-
-import Main from './components/Main';
-import Title from './components/Title'
-// import Body from './UI/Body';
-import Lk from './components/Lk';
-import ErrorPage from './components/ErrorPage';
-import Registration from './components/Registration';
-import LogIn from './components/LogIn';
-// import ProtectedRoute from './API/ProtectedRoute';
-import NewIdea from './components/NewIdea';
-import React, {useEffect, useState} from 'react';
-import useUserActions from "../src/API/useUserActions";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import useModal from './services/castomHooks/useModal';
+
+import Lk from './components/Lk';
+import ErrorPage from './components/ErrorPage';
+import Registration from './components/Make/Registration';
+import LogIn from './components/LogIn';
+import MakeRubric from './components/Make/MakeRubric';
+import MakeIdea from  './components/Make/MakeIdea'
+import OneIdea from './components/OneIdea'
+import Main from './components/Main';
+import Title from './components/Title'
+import Welcome from './components/Welcome';
 
 function App() {
   const [isVisable, togleVisable] = useModal()
@@ -29,14 +28,15 @@ function App() {
     {
       path: "/",
       element: <Title isVisable={isVisable} togleVisable={togleVisable}/>,
-      // errorElement: <ErrorPage />, // временно для тестирования
+      errorElement: <ErrorPage />,
+      basename: '/',
       children: [
         {
           path: "/",
           element: <Main />,
         },
         {
-          path: "lk/",
+          path: "user/",
           element: <Lk />,
         },
         {
@@ -49,9 +49,24 @@ function App() {
         },
         {
           path: "new/",
-          element: <NewIdea />,
+          element: <MakeIdea />,
         },
+        {
+          path: "new_rubric/",
+          element: <MakeRubric />,
+        },
+        {
+          path: "idea/",
+          element: <OneIdea />,
+        },
+        {
+          path: "welcome/",
+          element: <Welcome />,
+        },
+
       ]
+
+
     },
   ]);
 
