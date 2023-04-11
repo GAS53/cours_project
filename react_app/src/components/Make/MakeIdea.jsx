@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
+import { getRubrics } from '../postService'
+
 
 function MakeIdea() {
     const navigate = useNavigate();
@@ -10,9 +12,19 @@ function MakeIdea() {
     const [loaded, setRubricLoaded] = useState(false);
 
     useEffect(() => {
-        axios
-            .get('http://127.0.0.1:8000/api/rubrics/', {"Content-Type": "application/json", })
-            .then((response) => setRubric(response.data.results))
+        getRubrics()
+            
+            .then((response) => {
+                setRubric(response.data.results)
+                console.log('res.data')
+                console.log(response.data.results)
+до сюда все получилось ответ получен массивом
+{ id: "5ed9f2a3ec864bf7876c9bcd54c520f6", rubirc_name: "dfPythonмсиапfg" }
+дальше его отобразить
+
+
+
+            })
             .catch((error) => setRubricError(error.message))
             .finally(() => setRubricLoaded(true))
         
