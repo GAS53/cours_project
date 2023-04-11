@@ -21,8 +21,90 @@ class AbstractViewSet(viewsets.ModelViewSet):
     ordering_fields = ['updated', 'created']
     ordering = ['-updated']
 
+
+class MakeNewUeser(AbstractViewSet):
+    http_method_names = ('post')
+    permission_classes = (AllowAny,)
+    serializer_class = fr_serializers.NewUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+class MinIdeasViewSet(AbstractViewSet):
+    http_method_names = ('get')
+    permission_classes = (AllowAny,) 
+    serializer_class = fr_serializers.MinIdesSerializer
+
+
+    def get_queryset(self):
+        return bk_models.Idea.objects.all() 
+
+
+
+class LoginViewSet(AbstractViewSet):
+    serializer_class = fr_serializers.LoginSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ['post']
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+class OneIdeaViewSet(AbstractViewSet):
+    serializer_class = fr_serializers.OneIdeaSerializer
+    permission_classes = (AllowAny,) # IsAuthenticated
+    http_method_names = ['get']
+
+    def get_object(self):
+        obj = bk_models.Idea.objects.get_object_by_public_id(self.kwargs['pk'])
+        self.check_object_permissions(self.request, obj)
+        return obj
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class UserViewSet(AbstractViewSet):
-    http_method_names = ('patch', 'get', 'post')
+    http_method_names = ('patch', 'get')
     permission_classes = (AllowAny,) #  IsAuthenticated вернуть после тестироваиня
     serializer_class = fr_serializers.UserSerializer
 
@@ -45,18 +127,6 @@ class UserViewSet(AbstractViewSet):
 
 
 
-class LoginViewSet(viewsets.ViewSet):
-    serializer_class = fr_serializers.LoginSerializer
-    permission_classes = (AllowAny,)
-    http_method_names = ['post']
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except TokenError as e:
-            raise InvalidToken(e.args[0])
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
 
@@ -133,6 +203,13 @@ class IdeaViewSet(AbstractViewSet):
         if self.instance:
             return self.instance.post
         return value
+
+
+
+
+
+
+
 
 
 class RubricViewSet(AbstractViewSet):

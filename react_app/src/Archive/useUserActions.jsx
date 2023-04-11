@@ -23,7 +23,7 @@ function useUserActions() {
             return localStorage.getItem('im')
         } else if (localStorage.getItem('auth')) {
             const auth = localStorage.getItem('auth')
-            axios.get(`users/${auth.public_id}`)
+            axios.get(`users/${auth.id}`)
             .then( res => {
                 console.log('res.data.results')
                 console.log(res.data.results)
