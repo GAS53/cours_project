@@ -19,9 +19,9 @@ const Idea = (props) => {
 
                                         <div className="row g-1">
 
-                                            <div className="col-4 my-auto">
-                                                <a className="nameLink" href="#">{props.created_at}</a>
-                                            </div>
+                                            {/* <div className="col-4 my-auto">
+                                                <a className="nameLink" href="#">props.created_at</a>
+                                            </div> */}
 
                                             <div className="col my-auto">
                                                 <div className="progress">
@@ -36,10 +36,10 @@ const Idea = (props) => {
                                             </div>
                                             <div className="row justify-content-center align-items-center g-2">
                                                 <div className="col">
-                                                    <p className="card-text">Описание</p>
+                                                    <p className="card-text">Краткое содержание</p>
                                                     <p>{props.preview}</p>
                                                     <p className="card-text">
-                                                        <small className="text-muted">Опубликовано: {props.created_at}</small>
+                                                        <small className="text-muted">Опубликовано:  {props.created}</small>
                                                     </p>
                                                 </div>
                                             </div>

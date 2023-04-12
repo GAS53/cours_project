@@ -19,9 +19,9 @@ const Lk = (props) => {
         if (auth) {
 
             const data = [
-                    [ { title: "Никнейм", data: user.username, },],
+                    [ { title: "Никнейм", data: user.login, },],
                     [ { title: "Имя", data: user.first_name,},],
-                    [ { title: "Фамилия",  data: user.surname, } ],
+                    [ { title: "Фамилия",  data: user.last_name, } ],
                     [ { title: "Адрес почты",  data: user.email,},],
                     [ { title: "Возраст",  data: user.age, } ],
                 ]

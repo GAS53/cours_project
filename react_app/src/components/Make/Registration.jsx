@@ -1,4 +1,4 @@
-import { Button } from "./UI/button/Button";
+import { Button } from "../UI/button/Button"
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -18,9 +18,10 @@ const Registration = () => {
         }
         setValidated(true);
         const data = {
-            username: registrationForm.username.value,
-            surname: registrationForm.username.value,
+            avatar: registrationForm.customFile.value,
+            login: registrationForm.login.value,
             first_name: registrationForm.first_name.value,
+            last_name: registrationForm.last_name.value,
             password: registrationForm.password.value,
             email: registrationForm.email.value,
             age: registrationForm.age.value,
@@ -40,6 +41,7 @@ const Registration = () => {
             })
             .catch((err) => {
                 if (err.message) {
+                    alert(err.request.response)
                 setError(err.request.response);
                 }
             });
@@ -63,7 +65,7 @@ const Registration = () => {
 
                         <div className="mb-3">
                             <label className="form-label">Логин</label>
-                            <input type="text" className="form-control" id="username" placeholder="Введите ваш логин"/>
+                            <input type="text" className="form-control" id="login" placeholder="Введите ваш логин"/>
                         </div>
 
                         <div className="mb-3">
@@ -74,7 +76,7 @@ const Registration = () => {
 
                         <div className="mb-3">
                             <label className="form-label">Фамилия</label>
-                            <input type="text" className="form-control" id="surname" placeholder="Введите вашу фамилию"/>
+                            <input type="text" className="form-control" id="last_name" placeholder="Введите вашу фамилию"/>
                         </div>
 
                         <div className="mb-3">
