@@ -1,11 +1,31 @@
 from django.core.management import BaseCommand
 
 from authapp.models import BaseIdeinerUser
-from backend.models import Rubric, Idea, LikesToIdea, JoinedUser
+from backend.models import Rubric, Idea, LikesToIdea
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-a',
+            '--all',
+            action='store_true',
+            default=False,
+            help='Полное заполнение БД'
+        )
+
     def handle(self, *args, **options):
+        # Создаем рубрики
+        RUBRIC_PYTHON = 'Python'
+        RUBRIC_JAVASCRIPT = 'JavaScript'
+        rubrics = (RUBRIC_PYTHON, RUBRIC_JAVASCRIPT)
+        for rubric in rubrics:
+            if not Rubric.objects.filter(rubirc_name=rubric).first():
+                Rubric.objects.create(rubirc_name=rubric)
+
+        if not options['all']:
+            exit()
+
         # Создаем пользователей
         users = []
         for i in range(1, 4):
@@ -16,14 +36,6 @@ class Command(BaseCommand):
                                                     last_name=f'name{i}',
                                                     password='1234')
             users.append(BaseIdeinerUser.objects.filter(email=f'test{i}@test.com').first())
-
-        # Создаем рубрики
-        RUBRIC_PYTHON = 'Python'
-        RUBRIC_JAVASCRIPT = 'JavaScript'
-        rubrics = (RUBRIC_PYTHON, RUBRIC_JAVASCRIPT)
-        for rubric in rubrics:
-            if not Rubric.objects.filter(rubirc_name=rubric).first():
-                Rubric.objects.create(rubirc_name=rubric)
 
         # Создаем идеи
         rubric_python = Rubric.objects.filter(rubirc_name=RUBRIC_PYTHON).first()
@@ -44,10 +56,3 @@ class Command(BaseCommand):
             LikesToIdea.objects.create(idea=idea, autor=users[1])
         if not LikesToIdea.objects.filter(idea=idea, autor=users[2]).first():
             LikesToIdea.objects.create(idea=idea, autor=users[2])
-
-        # Создаем присоединеных пользователей
-        if not JoinedUser.objects.filter(idea=idea).first():
-            joined_user = JoinedUser.objects.create(idea=idea)
-            joined_user.add(users[1])
-            joined_user.add(users[2])
-
