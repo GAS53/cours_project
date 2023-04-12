@@ -46,7 +46,8 @@ class Command(BaseCommand):
             LikesToIdea.objects.create(idea=idea, autor=users[2])
 
         # Создаем присоединеных пользователей
-        if not JoinedUser.objects.filter(idea=idea, autor=users[1]).first():
-            JoinedUser.objects.create(idea=idea, autor=users[1])
-        if not JoinedUser.objects.filter(idea=idea, autor=users[2]).first():
-            JoinedUser.objects.create(idea=idea, autor=users[2])
+        if not JoinedUser.objects.filter(idea=idea).first():
+            joined_user = JoinedUser.objects.create(idea=idea)
+            joined_user.add(users[1])
+            joined_user.add(users[2])
+
