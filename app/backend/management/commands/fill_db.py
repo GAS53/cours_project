@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from authapp.models import BaseIdeinerUser
-from backend.models import Rubric, Idea
+from backend.models import Rubric, Idea, LikesToIdea
 
 
 class Command(BaseCommand):
@@ -29,11 +29,18 @@ class Command(BaseCommand):
         rubric_python = Rubric.objects.filter(rubirc_name=RUBRIC_PYTHON).first()
         rubric_javascript = Rubric.objects.filter(rubirc_name=RUBRIC_JAVASCRIPT).first()
 
-        if not Idea.objects.filter(title=f'Заголовок идеи 1'):
+        if not Idea.objects.filter(title=f'Заголовок идеи 1').first():
             Idea.objects.create(autor=users[1], title=f'Заголовок идеи 1', rubric=rubric_javascript,
-                                preview=f'Описание идеи 1', body=f'Содержание идеи 1')
+                                       preview=f'Описание идеи 1', body=f'Содержание идеи 1')
+        idea = Idea.objects.filter(title=f'Заголовок идеи 1').first()
 
         for i in range(2, 4):
             if not Idea.objects.filter(title=f'Заголовок идеи {i}'):
                 Idea.objects.create(autor=users[1], title=f'Заголовок идеи {i}', rubric=rubric_python,
                                     preview=f'Описание идеи {i}', body=f'Содержание идеи {i}')
+
+        # Создаем лайки идеи
+        if not LikesToIdea.objects.filter(idea=idea, autor=users[1]).first():
+            LikesToIdea.objects.create(idea=idea, autor=users[1])
+        if not LikesToIdea.objects.filter(idea=idea, autor=users[2]).first():
+            LikesToIdea.objects.create(idea=idea, autor=users[2])
