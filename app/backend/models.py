@@ -13,9 +13,9 @@ from authapp.models import BaseIdeinerUser
 
 class AbstractManager(models.Manager):
     '''абстрактный менеджер для передачи по api'''
-    def get_object_by_public_id(self, public_id):
+    def get_object_by_public_id(self, id):
         try:
-            instance = self.get(public_id=public_id)
+            instance = self.get(id=id)
             return instance
         except (ObjectDoesNotExist, ValueError, TypeError):
             return Http404
@@ -26,16 +26,16 @@ class AbstractManager(models.Manager):
 
 """ Дата создания/изменения/удаления"""
 class AbstractManager(models.Manager):
-    def get_object_by_public_id(self, public_id):
+    def get_object_by_public_id(self, id):
         try:
-            instance = self.get(public_id=public_id)
+            instance = self.get(id=id)
             return instance
         except (ObjectDoesNotExist, ValueError, TypeError):
             return Http404
 
 class DataTimeModel(models.Model):
     objects = AbstractManager()
-    public_id = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(db_index=True, primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, editable=False)
     updated = models.DateTimeField(verbose_name='Дата изменения', auto_now=True, editable=False)
     deleted = models.BooleanField(verbose_name='Запись удалена', default=False)
@@ -96,8 +96,8 @@ class Feedback(DataTimeModel):
         (1, '⭐'),
     )
     
-    idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE)
-    liker = models.ManyToManyField(BaseIdeinerUser)
+    idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE, related_name='feedback')
+    liker = models.ForeignKey(BaseIdeinerUser, verbose_name='Автор фидбэка', on_delete=models.CASCADE)
     rating = models.SmallIntegerField(verbose_name='Рейтинг', choices=RATINGS, default=RATING_FIVE)
     feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
 
@@ -113,15 +113,15 @@ class Feedback(DataTimeModel):
 
 
 class JoinedUser(DataTimeModel):
-    idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE)
-    user = models.ManyToManyField(BaseIdeinerUser)
+    idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE, related_name='joinedUser')
+    user = models.ForeignKey(BaseIdeinerUser, verbose_name='Кто присоединился', on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f'{self.user} присоединился к {self.idea.title}'
 
 
 class LikesToIdea(DataTimeModel):
-    idea = models.ForeignKey(Idea, on_delete=models.CASCADE, verbose_name='Идея')
+    idea = models.ForeignKey(Idea, on_delete=models.CASCADE, verbose_name='Идея', related_name='likesToIdea')
     autor = models.ForeignKey(BaseIdeinerUser, on_delete=models.CASCADE)
 
     def __str__(self) -> str:

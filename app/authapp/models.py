@@ -16,9 +16,9 @@ from backend import models as back_models
 """ !!!! важно !!!! в файле settings нельзя удалять поле: AUTH_USER_MODEL = 'authapp.BaseIdeinerUser' """
 class UserManager(BaseUserManager):
     'добавлено для JWT Tokena'
-    def get_object_by_public_id(self, public_id):
+    def get_object_by_public_id(self, id):
         try:
-            instance = self.get(public_id=public_id)
+            instance = self.get(id=id)
             return instance
         except (ObjectDoesNotExist, ValueError, TypeError):
             return Http404
@@ -51,13 +51,13 @@ class UserManager(BaseUserManager):
         return user
     
 def path_to_avatars(instance, filename):
-        return 'user_{0}/{1}'.format(instance.public_id, filename)
+        return 'user_{0}/{1}'.format(instance.id, filename)
 
 # заменен  AbstractUser т.к. перезаписываются поля дублировние при наследовании
 class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin): 
     login_validator = UnicodeUsernameValidator()
 
-    public_id = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(db_index=True, primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     age = models.PositiveIntegerField(verbose_name="возраст", default=18)
     email = models.CharField(verbose_name="email", max_length=40, default="", unique=True)
     login = models.CharField(validators=[login_validator], verbose_name="логин", max_length=40, unique=True, default="")
