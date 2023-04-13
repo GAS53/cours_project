@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from authapp.models import BaseIdeinerUser
-from backend.models import Rubric, Idea, LikesToIdea, JoinedUser
+from backend.models import Rubric, Idea, LikesToIdea, JoinedUser, Feedback
 
 
 class Command(BaseCommand):
@@ -33,7 +33,7 @@ class Command(BaseCommand):
                 BaseIdeinerUser.objects.create_user(login=f'login{i}',
                                                     email=f'test{i}@test.com',
                                                     first_name=f'name{i}',
-                                                    last_name=f'name{i}',
+                                                    last_name=f'surname{i}',
                                                     password='1234')
             users.append(BaseIdeinerUser.objects.filter(email=f'test{i}@test.com').first())
 
@@ -62,3 +62,13 @@ class Command(BaseCommand):
             JoinedUser.objects.create(idea=idea, user=users[1])
         if not JoinedUser.objects.filter(idea=idea, user=users[2]).first():
             JoinedUser.objects.create(idea=idea, user=users[2])
+
+        # Создаем фидбек пользователей к идее
+        if not Feedback.objects.filter(idea=idea, liker=users[1]):
+            Feedback.objects.create(idea=idea, liker=users[1], rating=5,
+                                    feedback=f'Отзыв пользователя {users[1].first_name} '
+                                             f'{users[1].last_name} на идею "{idea.title}"')
+        if not Feedback.objects.filter(idea=idea, liker=users[2]):
+            Feedback.objects.create(idea=idea, liker=users[2], rating=5,
+                                    feedback=f'Отзыв пользователя {users[2].first_name} '
+                                             f'{users[2].last_name} на идею "{idea.title}"')
