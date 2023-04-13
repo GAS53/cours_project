@@ -97,7 +97,7 @@ class Feedback(DataTimeModel):
     )
     
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE, related_name='feedback')
-    liker = models.ManyToManyField(BaseIdeinerUser)
+    liker = models.ForeignKey(BaseIdeinerUser, verbose_name='Автор фидбэка', on_delete=models.CASCADE)
     rating = models.SmallIntegerField(verbose_name='Рейтинг', choices=RATINGS, default=RATING_FIVE)
     feedback = models.TextField(verbose_name='Отзыв', default='Без отзыва')
 
@@ -114,7 +114,7 @@ class Feedback(DataTimeModel):
 
 class JoinedUser(DataTimeModel):
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE, related_name='joinedUser')
-    user = models.ManyToManyField(BaseIdeinerUser)
+    user = models.ForeignKey(BaseIdeinerUser, verbose_name='Кто присоединился', on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f'{self.user} присоединился к {self.idea.title}'
