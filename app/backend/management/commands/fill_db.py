@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from authapp.models import BaseIdeinerUser
-from backend.models import Rubric, Idea, LikesToIdea
+from backend.models import Rubric, Idea, LikesToIdea, JoinedUser
 
 
 class Command(BaseCommand):
@@ -56,3 +56,9 @@ class Command(BaseCommand):
             LikesToIdea.objects.create(idea=idea, autor=users[1])
         if not LikesToIdea.objects.filter(idea=idea, autor=users[2]).first():
             LikesToIdea.objects.create(idea=idea, autor=users[2])
+
+        # Создаем присоединившихся пользователей
+        if not JoinedUser.objects.filter(idea=idea, user=users[1]).first():
+            JoinedUser.objects.create(idea=idea, user=users[1])
+        if not JoinedUser.objects.filter(idea=idea, user=users[2]).first():
+            JoinedUser.objects.create(idea=idea, user=users[2])
