@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
-import { getRubrics } from '../postService'
+import { getRubrics, postIdea, loadAuth } from '../postService'
 
 
 function MakeIdea() {
@@ -13,45 +13,29 @@ function MakeIdea() {
 
     useEffect(() => {
         getRubrics()
-            
-            .then((response) => {
-                setRubric(response.data.results)
-                console.log('res.data')
-                console.log(response.data.results)
-до сюда все получилось ответ получен массивом
-{ id: "5ed9f2a3ec864bf7876c9bcd54c520f6", rubirc_name: "dfPythonмсиапfg" }
-дальше его отобразить
-
-
-
-            })
+            .then((response) => {setRubric(response.data.results)})
             .catch((error) => setRubricError(error.message))
             .finally(() => setRubricLoaded(true))
-        
         },[])
 
     function handleSubmit(e) {
         e.preventDefault();
         const loginForm = e.currentTarget;
         const form = new FormData();
-        const user = JSON.parse(localStorage.getItem('auth'))
+        const auth = loadAuth()
  
-
-        form.append("user", user.user.id)
+        form.append("autor", auth.id)
         form.append("title", loginForm.title.value)
         form.append("rubric", loginForm.rubrics.value)
         form.append("preview", loginForm.preview.value)
         form.append("body", loginForm.body.value)
 
 
-
-        axios
-            .post('http://127.0.0.1:8000/api/ideas/', form, {"Content-Type": "application/json", })
+        postIdea(form)
             .then(res =>  console.log(res.data))
             .catch((error) => alert.error(error.message))
             .finally(() => setRubricLoaded(true))
         navigate("/");
-
     }
 
     function changeHandler(event){
@@ -84,7 +68,7 @@ function MakeIdea() {
                                 <select className="form-select form-select" name="rubrics" onChange={changeHandler} id="rubrics">
                                     {rubrics.map(rubric => 
 
-                                    <option key={rubric.id} value={rubric.id}>{rubric.rubirc}</option> )}
+                                    <option key={rubric.id} value={rubric.id}>{rubric.rubirc_name}</option> )}
                                    
                                 </select>
                             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { getAuth, getIdea, connectToIdea } from "./postService";
+import { getAuth, getIdea, connectToIdea, LikeIdea } from "./postService";
 import { useNavigate } from "react-router-dom";
 
 
@@ -32,26 +32,40 @@ function OneIdea() {
 
     function connectHandler(e) {
         connectToIdea(idea_id)
-            .then(alert(`вы вступили в команду ${oneIdea.title}`))
-            .catch((error) => alert(`ошибка при добавлении пользователя  ${error.message}`))
+            .then(res => {
+                    alert(`вы вступили в команду ${oneIdea.title}`)
+                })
+            .catch((error) => {
+                if (error.response.status === 423 ) {
+                        alert(`вы уже состоите в команде ${oneIdea.title}`)
+                    } else {
+                    alert(`ошибка при добавлении пользователя  ${error.message}`)}})
         // window.location.reload(false)
     }
 
     function likeHandler(e) {
-        const res =JSON.parse( localStorage.getItem('auth'))
-        
-        if (oneIdea.likers.indexOf(res.user.id) != -1) {
-            oneIdea.likers.push(res.user.id)
-            axios
-                .post(`http://127.0.0.1:8000/api/ideas/${idea_id}`, oneIdea, {"Content-Type": "application/json", })
-                .then(alert(`вы ${res.user.login} лайкнули ${oneIdea.title}`))
+        const auth = getAuth()
+        console.log('oneIdea.likesToIdea')
+        console.log(oneIdea.likesToIdea)
+        if (oneIdea.likesToIdea.indexOf(auth.id) != -1) {
+            oneIdea.likesToIdea.push(auth.id)
+            const data = {
+                id: idea_id,
+                user_id: auth.id
+            }
+            console.log('data')
+            console.log(data)
+            LikeIdea(data)
+                .then(alert(`вы ${auth.login} лайкнули ${oneIdea.title}`))
                 .catch((error) => alert(`лайк не удался ${error.message}`))
 
         } else {
-            alert(`вы ${res.user.login} уже лайкали ${oneIdea.title}`)
+            alert(`вы ${auth.login} уже лайкали ${oneIdea.title}`)
         }
-        window.location.reload(false)
+        // window.location.reload(false)
     }
+
+    console.log('oneIdea')
     console.log(oneIdea)
 
 

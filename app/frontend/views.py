@@ -60,8 +60,8 @@ class LoginViewSet(AbstractViewSet):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
-class OneIdeaViewSet(AbstractViewSet):
-    serializer_class = fr_serializers.OneIdeaSerializer
+class GetIdeaViewSet(AbstractViewSet):
+    serializer_class = fr_serializers.GetIdeaSerializer
     permission_classes = (AllowAny,) # IsAuthenticated  исправить когда django примет токен
     http_method_names = ['get']
 
@@ -71,26 +71,66 @@ class OneIdeaViewSet(AbstractViewSet):
         return obj
     
 
-class JoinToIdea(AbstractViewSet):
-    serializer_class = fr_serializers.LoginSerializer
-    permission_classes = (AllowAny,)   # IsAuthenticated  исправить когда django примет токен
-    http_method_names = ['patch']
+class PostIdeaViewSet(AbstractViewSet):
+    serializer_class = fr_serializers.PostIdeaSerializer
+    permission_classes = (AllowAny,) # IsAuthenticated  исправить когда django примет токен
+    http_method_names = ['post']
 
-    def get_object(self, pk):
-        return bk_models.JoinedUser.objects.get(pk=pk)
-
-    def patch(self, request):
-        print('request')
-        print(request.data)
-        join_object = self.objects.get_object_by_public_id(request.data['pk'])
-        serializer = fr_serializers.JoinedUserSerializer(join_object, data=request.DATA, partial=True)
+    
+    def post(self, request):
+        serializer = fr_serializers.PostIdeaSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(code=201, data=serializer.data)
-        return Response(code=400, data="неправильно заданы параметры, ошибка при серриализации")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JoinToIdea(AbstractViewSet):
+    serializer_class = fr_serializers.JoinedUserSerializer
+    permission_classes = (AllowAny,)   # IsAuthenticated  исправить когда django примет токен
+    http_method_names = ['post']
+
+    # def get_object(self, idea_id, user_id):
+    #     return 
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.serializer_class(data=request.data)
+    #     print('dfdddddddddddddddddd')
+    #     if serializer.is_valid():
+    #         obj = bk_models.JoinedUser.objects.get(idea_id=request.idea_id, user_id=request.user_id)
+    #         serializer.is_valid(raise_exception=True)
+      
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+    def create(self, request, *args, **kwargs):
+        print('dfdddddddddddddddddd')
+        serializer = fr_serializers.JoinedUserSerializer(data=request.data)
+        if serializer.is_valid():
+            print(f'request.data {request.data}')
+            obj = bk_models.JoinedUser.objects.filter(idea_id=request.data['idea'], user_id=request.data['user'])
+            if obj:
+                return Response(serializer.data, status=status.HTTP_423_LOCKED)
+            else:
+                serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
+class LikesViewSet(AbstractViewSet):
+    http_method_names = ('post') # , 'get', 'put', 'delete'
+    permission_classes = (AllowAny,)  # UserPermission
+    serializer_class = fr_serializers.LikesSerializer
+    
+    def post(self, request):
+        print('request')
+        print(request.data)
+        serializer = fr_serializers.LikesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -352,27 +392,3 @@ class JoinedUserViewSet(AbstractViewSet):
         return value
 
 
-class LikesViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')
-    permission_classes = (AllowAny,)  # UserPermission
-    serializer_class = fr_serializers.LikesSerializer
-
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def get_queryset(self):
-        return bk_models.LikesToIdea.objects.all() 
-        
-    def get_object(self):
-        obj = bk_models.LikesToIdea.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def validate_post(self, value):
-        if self.instance:
-            return self.instance.post
-        return value

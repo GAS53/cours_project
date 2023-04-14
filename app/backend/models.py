@@ -114,7 +114,7 @@ class Feedback(DataTimeModel):
 
 class JoinedUser(DataTimeModel):
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE, related_name='joinedUser')
-    user = models.ManyToManyField(BaseIdeinerUser)
+    user = models.ForeignKey(BaseIdeinerUser, on_delete=models.CASCADE, verbose_name='пользователь')
 
     def __str__(self) -> str:
         return f'{self.user} присоединился к {self.idea.title}'

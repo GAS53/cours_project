@@ -55,7 +55,7 @@ class UserSerializer(AbstractSerializer):
     '''вложенные методы не проверены'''
     class Meta:
         model = BaseIdeinerUser
-        fields = ['login', 'first_name', 'last_name', 'email', 'age', 'password', 'is_superuser', 'id', 'avatar']
+        fields = ['id', 'login', 'first_name', 'last_name', 'email', 'age', 'password', 'is_superuser', 'id', 'avatar']
         read_only_field = ['is_active']
 
 
@@ -130,7 +130,8 @@ class FeedbackSerializer(AbstractSerializer):
 
 
 
-class OneIdeaSerializer(AbstractSerializer):
+
+class GetIdeaSerializer(AbstractSerializer):
     autor = UserSerializer()
     rubric = RubricSerializer()
     joinedUser = JoinedUserSerializer(many=True)
@@ -142,7 +143,11 @@ class OneIdeaSerializer(AbstractSerializer):
         model = backend.Idea
         fields = '__all__'
 
+class PostIdeaSerializer(AbstractSerializer):
 
+    class Meta:
+        model = backend.Idea
+        fields = '__all__'
 
 
 
