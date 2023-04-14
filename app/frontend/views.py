@@ -90,24 +90,10 @@ class JoinToIdea(AbstractViewSet):
     permission_classes = (AllowAny,)   # IsAuthenticated  исправить когда django примет токен
     http_method_names = ['post']
 
-    # def get_object(self, idea_id, user_id):
-    #     return 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.serializer_class(data=request.data)
-    #     print('dfdddddddddddddddddd')
-    #     if serializer.is_valid():
-    #         obj = bk_models.JoinedUser.objects.get(idea_id=request.idea_id, user_id=request.user_id)
-    #         serializer.is_valid(raise_exception=True)
-      
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     return Response(serializer.validated_data, status=status.HTTP_200_OK)
-
 
     def create(self, request, *args, **kwargs):
-        print('dfdddddddddddddddddd')
         serializer = fr_serializers.JoinedUserSerializer(data=request.data)
         if serializer.is_valid():
-            print(f'request.data {request.data}')
             obj = bk_models.JoinedUser.objects.filter(idea_id=request.data['idea'], user_id=request.data['user'])
             if obj:
                 return Response(serializer.data, status=status.HTTP_423_LOCKED)
@@ -123,12 +109,14 @@ class LikesViewSet(AbstractViewSet):
     permission_classes = (AllowAny,)  # UserPermission
     serializer_class = fr_serializers.LikesSerializer
     
-    def post(self, request):
-        print('request')
-        print(request.data)
+    def create(self, request, *args, **kwargs):
         serializer = fr_serializers.LikesSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            obj = bk_models.LikesToIdea.objects.filter(idea=request.data['idea'], autor=request.data['autor'])
+            if obj:
+                return Response(serializer.data, status=status.HTTP_423_LOCKED)
+            else:
+                serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
