@@ -1,6 +1,6 @@
 import { Button } from "../UI/button/Button"
 import React, { useState } from "react";
-import axios from "axios";
+import { regUser, setInLocal } from '../postService'
 import { useNavigate } from "react-router-dom";
 
 
@@ -28,23 +28,19 @@ const Registration = () => {
             };
         console.log('data')
         console.log(data)
-        axios.post("http://127.0.0.1:8000/api/register/",  data)
+        
+
+        regUser(data)
             .then((res) => {
-                console.log('res')
-                console.log(res)
-                localStorage.setItem("auth", JSON.stringify({
-                    access: res.data.access,
-                    refresh: res.data.refresh,
-                    user: res.data.user,
-                }));
-                navigate("/");
-            })
+                console.log('datadatadatadatadata')
+                console.log(data)
+                setInLocal(res.data)
+                navigate("/")
+                })
             .catch((err) => {
                 if (err.message) {
-                    alert(err.request.response)
-                setError(err.request.response);
-                }
-            });
+                    alert(err.message)}
+                });
     }
                     
     return (
@@ -106,7 +102,7 @@ const Registration = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
 export default Registration;

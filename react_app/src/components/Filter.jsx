@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Button } from "./UI/button/Button";
-import Rudiobutton from "./Rudiobutton"
+import Rudiobutton from "./UI/Rudiobutton"
 
 function Filter(props) {
 

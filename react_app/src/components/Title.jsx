@@ -4,10 +4,10 @@ import { Link, Outlet } from "react-router-dom";
 import Modal from "./UI/modal/Modal";
 import LogIn from "./LogIn";
 import { useNavigate } from "react-router-dom";
-import { getUser } from "./Auth";
+import { logout, getAuth } from '../components/postService'
 
 function Title({isVisable, togleVisable}) {
-    const user = getUser()
+    const user = getAuth()
     const navigate = useNavigate();
     // useEffect(() => {
     // const is_auth = {localStorage.getItem('auth') ? true : false}
@@ -15,10 +15,7 @@ function Title({isVisable, togleVisable}) {
     // const is_auth = false
 
 
-    function logout() {
-        localStorage.removeItem("auth");
-        navigate("/");
-    }
+    
 
 
     return (

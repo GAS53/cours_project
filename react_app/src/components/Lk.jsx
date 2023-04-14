@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RowTwoValues } from "./UI/rows/RowTwoValues";
-import { getUserInfo } from "./Auth";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-
-import { useNavigate } from "react-router-dom";
+import { loadAuth } from './postService'
 
 
 const Lk = (props) => {
@@ -12,18 +8,16 @@ const Lk = (props) => {
 
 
     useEffect(() => {
-        const auth = JSON.parse(localStorage.getItem('auth'))
-        console.log('111111')
-        console.log(auth)
-        const user = auth.user
+        const auth = loadAuth()
+        console.log('auth')
+        console.log(auth.user)
         if (auth) {
-
             const data = [
-                    [ { title: "Никнейм", data: user.login, },],
-                    [ { title: "Имя", data: user.first_name,},],
-                    [ { title: "Фамилия",  data: user.last_name, } ],
-                    [ { title: "Адрес почты",  data: user.email,},],
-                    [ { title: "Возраст",  data: user.age, } ],
+                    [ { title: "Никнейм", data: auth.login, },],
+                    [ { title: "Имя", data: auth.first_name,},],
+                    [ { title: "Фамилия",  data: auth.last_name, } ],
+                    [ { title: "Адрес почты",  data: auth.email,},],
+                    [ { title: "Возраст",  data: auth.age, } ],
                 ]
             setIm(data)
         }

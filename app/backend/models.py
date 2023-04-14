@@ -116,6 +116,7 @@ class JoinedUser(DataTimeModel):
     idea = models.ForeignKey(Idea, verbose_name='Идея', on_delete=models.CASCADE, related_name='joinedUser')
     user = models.ForeignKey(BaseIdeinerUser, verbose_name='Кто присоединился', on_delete=models.CASCADE)
 
+
     def __str__(self) -> str:
         return f'{self.user} присоединился к {self.idea.title}'
 
