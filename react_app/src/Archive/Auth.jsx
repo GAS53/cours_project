@@ -6,14 +6,7 @@ const axiosService = axios.create({
     headers: { "Content-Type": "application/json", },
   });
 
-function getUser() {
-    const auth = JSON.parse(localStorage.getItem("auth")) || null;
-    if (auth) {
-      return auth.user;
-    } else {
-      return null;
-    }
-  }
+
 
 function getUserInfo() {
     const auth = JSON.parse(localStorage.getItem("auth")) || null;

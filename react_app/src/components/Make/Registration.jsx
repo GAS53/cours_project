@@ -1,6 +1,6 @@
 import { Button } from "../UI/button/Button"
 import React, { useState } from "react";
-import { regiserUser, setInLocal } from '../postService'
+import { regUser, setInLocal } from '../postService'
 import { useNavigate } from "react-router-dom";
 
 
@@ -30,18 +30,16 @@ const Registration = () => {
         console.log(data)
         
 
-        regiserUser(data)
+        regUser(data)
             .then((res) => {
                 console.log('datadatadatadatadata')
                 console.log(data)
-                setInLocal(res)
+                setInLocal(res.data)
                 navigate("/")
                 })
             .catch((err) => {
                 if (err.message) {
-                    alert(err.request.response)
-                setError(err.request.response);
-                }
+                    alert(err.message)}
                 });
     }
                     
