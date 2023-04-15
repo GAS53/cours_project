@@ -36,19 +36,22 @@ class Command(BaseCommand):
                                                     last_name=f'surname{i}',
                                                     password='1234')
             users.append(BaseIdeinerUser.objects.filter(email=f'test{i}@test.com').first())
+        users[0].is_staff = True
+        users[0].is_superuser = True
+        users[0].save()
 
         # Создаем идеи
         rubric_python = Rubric.objects.filter(rubirc_name=RUBRIC_PYTHON).first()
         rubric_javascript = Rubric.objects.filter(rubirc_name=RUBRIC_JAVASCRIPT).first()
 
         if not Idea.objects.filter(title=f'Заголовок идеи 1').first():
-            Idea.objects.create(autor=users[1], title=f'Заголовок идеи 1', rubric=rubric_javascript,
+            Idea.objects.create(autor=users[0], title=f'Заголовок идеи 1', rubric=rubric_javascript,
                                 preview=f'Описание идеи 1', body=f'Содержание идеи 1')
         idea = Idea.objects.filter(title=f'Заголовок идеи 1').first()
 
         for i in range(2, 4):
             if not Idea.objects.filter(title=f'Заголовок идеи {i}'):
-                Idea.objects.create(autor=users[1], title=f'Заголовок идеи {i}', rubric=rubric_python,
+                Idea.objects.create(autor=users[0], title=f'Заголовок идеи {i}', rubric=rubric_python,
                                     preview=f'Описание идеи {i}', body=f'Содержание идеи {i}')
 
         # Создаем лайки идеи
@@ -65,7 +68,7 @@ class Command(BaseCommand):
 
         # Создаем фидбек пользователей к идее
         if not Feedback.objects.filter(idea=idea, liker=users[1]):
-            Feedback.objects.create(idea=idea, liker=users[1], rating=5,
+            Feedback.objects.create(idea=idea, liker=users[1], rating=3,
                                     feedback=f'Отзыв пользователя {users[1].first_name} '
                                              f'{users[1].last_name} на идею "{idea.title}"')
         if not Feedback.objects.filter(idea=idea, liker=users[2]):
