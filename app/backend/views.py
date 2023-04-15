@@ -121,7 +121,7 @@ def search(request):
 def my_ideas(request):
     title = "Мои идели"
 
-    ideas = GenIdeasList(Idea.objects.filter(id=request.user.id))
+    ideas = GenIdeasList(Idea.objects.filter(autor=request.user))
 
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
