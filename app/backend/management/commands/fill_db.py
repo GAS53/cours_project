@@ -36,6 +36,9 @@ class Command(BaseCommand):
                                                     last_name=f'surname{i}',
                                                     password='1234')
             users.append(BaseIdeinerUser.objects.filter(email=f'test{i}@test.com').first())
+        users[0].is_staff = True
+        users[0].is_superuser = True
+        users[0].save()
 
         # Создаем идеи
         rubric_python = Rubric.objects.filter(rubirc_name=RUBRIC_PYTHON).first()
