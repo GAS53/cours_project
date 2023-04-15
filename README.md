@@ -13,5 +13,6 @@
 ```test2@test.com```<br>
 ```test3@test.com```<br>
 и паролем<br>
-```1234```
+```1234```<br>
+Пользователь ```test1@test.com``` обладает аминистративными правами
 5. ```>  python manage.py runserver```

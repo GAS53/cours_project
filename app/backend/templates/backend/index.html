@@ -83,7 +83,8 @@
                                     <div class="row g-1">
 
                                         <div class="col-4 my-auto">
-                                            <a class="nameLink" href="#">{{ item.idea.autor }}</a>
+                                            <a class="nameLink" href="#">{{ item.idea.autor.first_name|title }}
+                                            {{ item.idea.autor.last_name|title }}</a>
                                         </div>
 
                                         <div class="col my-auto">
