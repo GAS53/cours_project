@@ -65,7 +65,7 @@ class Command(BaseCommand):
 
         # Создаем фидбек пользователей к идее
         if not Feedback.objects.filter(idea=idea, liker=users[1]):
-            Feedback.objects.create(idea=idea, liker=users[1], rating=5,
+            Feedback.objects.create(idea=idea, liker=users[1], rating=3,
                                     feedback=f'Отзыв пользователя {users[1].first_name} '
                                              f'{users[1].last_name} на идею "{idea.title}"')
         if not Feedback.objects.filter(idea=idea, liker=users[2]):

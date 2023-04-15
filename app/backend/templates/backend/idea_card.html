@@ -144,7 +144,8 @@
                                                         <div class="col-2">
                                                             <img src="https://img.freepik.com/free-vector/cute-panda-drinking-boba-milk-tea-cartoon-vector-illustration-animal-food-concept-isolated-vector-flat-cartoon-style_138676-1949.jpg?w=740&t=st=1680708790~exp=1680709390~hmac=36a6d896e32197493ab7fcd329bb0b4fcb1453aee3e3bdaa03595985560c3068s"
                                                                  class="img-fluid rounded-circle" alt="Card title">
-                                                            <p class="text-center">{{ joined_user.user.first_name|title }}
+                                                            <p class="text-center">{{ joined_user.user.first_name|title
+                                                                }}
                                                                 {{ joined_user.user.last_name|title }}</p>
                                                         </div>
                                                         {% endfor %}
@@ -164,13 +165,15 @@
 
                 <!-- Отзыв -->
                 <div class="container">
+                    {% for feedback in feedbacks %}
                     <div class="row justify-content-center align-items-center g-2 feedback rounded my-2 mx-2 px-2">
                         <div class="col-3">
                             <div class="text-center">
-                                Philip Williams
+                                {{ feedback.liker.first_name|title }}
+                                {{ feedback.liker.last_name|title }}
                             </div>
                             <div class="text-center">
-                                <small class="text-muted">05/05/2005</small>
+                                <small class="text-muted">{{ feedback.created|date:"d/m/Y" }}</small>
                             </div>
                         </div>
                         <div class="col">
@@ -179,7 +182,7 @@
                                     <div class="col-6">
                                         <div>
                                             <small class="text-muted">Оценка</small>
-                                            <span>⭐⭐⭐⭐⭐</span>
+                                            <span>{{ feedback.get_rating_display }}</span>
                                         </div>
 
                                     </div>
@@ -189,12 +192,7 @@
                                             <small class="text-muted">Текст отзыва</small>
                                         </div>
                                         <div class="col mb-3">
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi quam
-                                            praesentium recusandae odit saepe unde natus, tenetur, suscipit vero hic
-                                            dolorem cumque enim consequatur illo quae! Est illo eveniet provident, hic
-                                            accusamus nisi aliquam molestias sed voluptas. Eius, magnam eum. Facilis
-                                            esse tempora minima velit veritatis id consequuntur labore recusandae
-                                            necessitatibus, ea nemo eaque incidunt sed tempore ut. Molestias, sit.
+                                            {{ feedback.feedback }}
                                         </div>
                                     </div>
 
@@ -204,6 +202,7 @@
 
 
                     </div>
+                    {% endfor %}
                 </div>
 
                 <!-- Пагинатор -->
