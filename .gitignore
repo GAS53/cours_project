@@ -344,3 +344,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/
+tmp/
