@@ -96,6 +96,7 @@ class JoinToIdea(AbstractViewSet):
         if serializer.is_valid():
             obj = bk_models.JoinedUser.objects.filter(idea_id=request.data['idea'], user_id=request.data['user'])
             if obj:
+                obj.delete()
                 return Response(serializer.data, status=status.HTTP_423_LOCKED)
             else:
                 serializer.save()
@@ -114,6 +115,7 @@ class LikesViewSet(AbstractViewSet):
         if serializer.is_valid():
             obj = bk_models.LikesToIdea.objects.filter(idea=request.data['idea'], autor=request.data['autor'])
             if obj:
+                obj.delete()
                 return Response(serializer.data, status=status.HTTP_423_LOCKED)
             else:
                 serializer.save()

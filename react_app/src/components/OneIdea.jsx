@@ -9,28 +9,25 @@ import { useNavigate } from "react-router-dom";
 function OneIdea() {
     const navigate = useNavigate();
     const [queryParameters] = useSearchParams()
-    let idea_id = queryParameters.get('id')
+    const idea_id = queryParameters.get('id')
+    const [ myId, setMyId ] = useState()
     const [oneIdea, setOneIdea] = useState([])
-    // const [joinedUser, setjoinedUser] = useState([])
+
 
 
 
 
     useEffect(() => {
         const auth = getAuth()
+        console.log('auth')
+        console.log(auth)
+        setMyId(auth.id)
         if (auth) {
             getIdea(idea_id)
-                .then(res => 
-                    {
-                        console.log('res.data')
-                        console.log(res.data)
-                        setOneIdea(res.data)
-                        // setjoinedUser(res.data.joinedUser)
-                    }
-                    )
+                .then(res =>  { setOneIdea(res.data) })
                 .catch(res => {alert(res)})
         } else { navigate( '/welcome/') }
-        },[setOneIdea])
+        },[oneIdea])
 
 
     function connectHandler(e) {
@@ -40,10 +37,9 @@ function OneIdea() {
                 })
             .catch((error) => {
                 if (error.response.status === 423 ) {
-                        alert(`вы уже состоите в команде ${oneIdea.title}`)
+                        alert(`вы вышли из команды ${oneIdea.title}`)
                     } else {
                     alert(`ошибка при добавлении пользователя  ${error.message}`)}})
-        // window.location.reload(false)
     }
 
     function likeHandler(e) {
@@ -57,18 +53,14 @@ function OneIdea() {
                 .then(alert(`вы ${auth.login} лайкнули ${oneIdea.title}`))
                 .catch((error) => {
                     if (error.response.status === 423 ) {
-                        alert(`вы уже лайкали ${oneIdea.title}`)
+                        alert(`вы убрали лайк ${oneIdea.title}`)
                     } else {
                         alert(`ошибка при добавлении лайка ${error.message}`)}})
-
-        // window.location.reload(false)
     }}
 
-    console.log('oneIdea')
-    console.log(oneIdea)
-    console.log(oneIdea.joinedUser)
-    console.log(oneIdea.title)
-
+    if (oneIdea.joinedUser===undefined) {
+        return (<dvi><h3>Страница загружается</h3></dvi>)
+    } else {
 
     return (
         <div className="card mb-3" style={{minHeight: '166px', minWidth: '380px'}}>
@@ -131,11 +123,12 @@ function OneIdea() {
                                                 <div className="mt-2 text-center">
                                                     <h1>⭐⭐⭐⭐⭐</h1>
                                                 </div>
-                                                <div className="mt-2 d-grid gap-2">
-                                                    <button type="button" onClick={connectHandler} className="btn mainButton">
-                                                        Вступить в команду
-                                                    </button>
-                                                </div>
+                                                
+                                                    <div className="mt-2 d-grid gap-2">
+                                                        <button type="button" onClick={connectHandler} className="btn mainButton">
+                                                        { oneIdea.joinedUser.indexOf(myId) ?  <p>Выйти из команды</p>  : <p>Вступить в команду</p>  }
+                                                        </button>
+                                                    </div>
                                                 <div className="mt-2 d-grid gap-2">
                                                     <button type="button" onClick={likeHandler} className="btn btn-outline-warning">
                                                         Лайкнуть
@@ -151,46 +144,25 @@ function OneIdea() {
 
                             <div className="row justify-content-center align-items-center g-2">
                                 <div className="col">
-                                    
-                                    <div className="accordion accordion-flush" id="accordionFlushExample">
-                                        <div className="accordion-item">
-                                          <h2 className="accordion-header" id="flush-headingTwo">
-                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                               {/* { oneIdea.joinedUser === undefined ?
-                                               `Ты можешь первым присоедениться в команду`
-                                              :
-                                              `Уже с нами ${oneIdea.joinedUser.length} человек`} */}
-                                            </button>
-                                          </h2>
-                                          <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                                            
-                                            
-                                            <div className="accordion-body">
-                                               <h3> Наша команда </h3>
-                                               <div className="container-fluid">
-                                                <div className="row justify-content-between align-items-center g-2">
-                                                    {/* {oneIdea.joinedUser === undefined  ? 
-                                                         OneIdea.joinedUser.map( usr => 
-                                                            <div className="col-2">
-                                                                <p className="text-center">{usr.id}</p>
-                                                            </div> )
-                                                     :
-                                                     <p>'test'</p> }                                               */}
-                                                </div>
-                                               </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        
-                                      </div>
+                                    <div>
+                                        { oneIdea.joinedUser === undefined ?
+                                        `Ты можешь первым присоедениться в команду`
+                                            :
+                                        `Уже с нами ${oneIdea.joinedUser.length} человек`}
+                                    </div>
+                                    <div>
+                                        { oneIdea.likesToIdea === undefined ?
+                                        `` : `Идея набрала ${oneIdea.likesToIdea.length} лайков`}
+                                    </div>   
 
                                 </div>
-                                </div>
-                                </div>
-                                </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
                          
         ) 
-}
+}}
+
 export default OneIdea;
