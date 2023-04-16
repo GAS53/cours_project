@@ -51,9 +51,10 @@ def lk_edit(request):  # изменение профиля через форму
 
     if request.method == 'POST':
         user = BaseIdeinerUser.objects.filter(id=request.user.id).first()
+        print(request.POST)
 
-        if request.POST['login']: user.login = request.POST['login']
         if request.POST['first_name']: user.first_name = request.POST['first_name']
+        if request.POST['last_name']: user.last_name = request.POST['last_name']
         if request.POST['email']: user.email = request.POST['email']
         if request.POST['age']: user.age = request.POST['age']
 
