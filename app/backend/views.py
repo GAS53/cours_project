@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect, render
@@ -276,7 +277,9 @@ def feedback_delete(request, pk):  # удаление отзыва при наж
 def joined_user_add(request, pk):  # добавление пользователя в проект через форму
 
     idea = Idea.objects.filter(pk=pk).first()
-    autor = request.user.last_name
+    # autor = request.user.last_name
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('authapp:login'))
 
     if JoinedUser.objects.filter(idea=idea, user=request.user):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -305,6 +308,8 @@ def like_add(request, pk): # добавление лайка на проект �
 
     idea = Idea.objects.filter(pk=pk).first()
     # autor = request.user.login
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('authapp:login'))
 
     new_like = LikesToIdea.objects.create(idea=idea, autor=request.user)
     new_like.save()
