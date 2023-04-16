@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from authapp.models import BaseIdeinerUser
-from backend.models import Rubric, Idea, LikesToIdea
+from backend.models import Rubric, Idea, LikesToIdea, JoinedUser, Feedback
 
 
 class Command(BaseCommand):
@@ -33,22 +33,25 @@ class Command(BaseCommand):
                 BaseIdeinerUser.objects.create_user(login=f'login{i}',
                                                     email=f'test{i}@test.com',
                                                     first_name=f'name{i}',
-                                                    last_name=f'name{i}',
+                                                    last_name=f'surname{i}',
                                                     password='1234')
             users.append(BaseIdeinerUser.objects.filter(email=f'test{i}@test.com').first())
+        users[0].is_staff = True
+        users[0].is_superuser = True
+        users[0].save()
 
         # Создаем идеи
         rubric_python = Rubric.objects.filter(rubirc_name=RUBRIC_PYTHON).first()
         rubric_javascript = Rubric.objects.filter(rubirc_name=RUBRIC_JAVASCRIPT).first()
 
         if not Idea.objects.filter(title=f'Заголовок идеи 1').first():
-            Idea.objects.create(autor=users[1], title=f'Заголовок идеи 1', rubric=rubric_javascript,
+            Idea.objects.create(autor=users[0], title=f'Заголовок идеи 1', rubric=rubric_javascript,
                                 preview=f'Описание идеи 1', body=f'Содержание идеи 1')
         idea = Idea.objects.filter(title=f'Заголовок идеи 1').first()
 
         for i in range(2, 4):
             if not Idea.objects.filter(title=f'Заголовок идеи {i}'):
-                Idea.objects.create(autor=users[1], title=f'Заголовок идеи {i}', rubric=rubric_python,
+                Idea.objects.create(autor=users[0], title=f'Заголовок идеи {i}', rubric=rubric_python,
                                     preview=f'Описание идеи {i}', body=f'Содержание идеи {i}')
 
         # Создаем лайки идеи
@@ -56,3 +59,19 @@ class Command(BaseCommand):
             LikesToIdea.objects.create(idea=idea, autor=users[1])
         if not LikesToIdea.objects.filter(idea=idea, autor=users[2]).first():
             LikesToIdea.objects.create(idea=idea, autor=users[2])
+
+        # Создаем присоединившихся пользователей
+        if not JoinedUser.objects.filter(idea=idea, user=users[1]).first():
+            JoinedUser.objects.create(idea=idea, user=users[1])
+        if not JoinedUser.objects.filter(idea=idea, user=users[2]).first():
+            JoinedUser.objects.create(idea=idea, user=users[2])
+
+        # Создаем фидбек пользователей к идее
+        if not Feedback.objects.filter(idea=idea, liker=users[1]):
+            Feedback.objects.create(idea=idea, liker=users[1], rating=3,
+                                    feedback=f'Отзыв пользователя {users[1].first_name} '
+                                             f'{users[1].last_name} на идею "{idea.title}"')
+        if not Feedback.objects.filter(idea=idea, liker=users[2]):
+            Feedback.objects.create(idea=idea, liker=users[2], rating=5,
+                                    feedback=f'Отзыв пользователя {users[2].first_name} '
+                                             f'{users[2].last_name} на идею "{idea.title}"')

@@ -45,8 +45,8 @@ class UserManager(BaseUserManager):
             raise TypeError('Должен быть задан пароль')
         user = self.create_user(login, email, password,
         **kwargs)
-        user.is_superuser = True
-        # user.is_staff = True
+        # user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
     
@@ -67,7 +67,7 @@ class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(verbose_name="password", max_length=40, default="")
     registration_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
 
