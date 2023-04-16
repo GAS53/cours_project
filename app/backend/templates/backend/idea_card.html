@@ -139,13 +139,13 @@
                                             <div class="accordion-body">
                                                 <h3> Наша команда </h3>
                                                 <div class="container-fluid">
-                                                    <div class="row justify-content-between align-items-center g-2">
+                                                    <div class="row align-items-center g-2">
                                                         {% for joined_user in joined_users %}
                                                         <div class="col-2">
                                                             <img src="https://img.freepik.com/free-vector/cute-panda-drinking-boba-milk-tea-cartoon-vector-illustration-animal-food-concept-isolated-vector-flat-cartoon-style_138676-1949.jpg?w=740&t=st=1680708790~exp=1680709390~hmac=36a6d896e32197493ab7fcd329bb0b4fcb1453aee3e3bdaa03595985560c3068s"
                                                                  class="img-fluid rounded-circle" alt="Card title">
-                                                            <p class="text-center">{{ joined_user.user.first_name|title
-                                                                }}
+                                                            <p class="text-center">
+                                                                {{ joined_user.user.first_name|title }}
                                                                 {{ joined_user.user.last_name|title }}</p>
                                                         </div>
                                                         {% endfor %}

@@ -278,10 +278,10 @@ def joined_user_add(request, pk):  # добавление пользовател
     idea = Idea.objects.filter(pk=pk).first()
     autor = request.user.last_name
 
-    if JoinedUser.objects.filter(idea=idea, autor=autor):
+    if JoinedUser.objects.filter(idea=idea, user=request.user):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-    new_joined_user = JoinedUser.objects.create(idea=idea, autor=autor)
+    new_joined_user = JoinedUser.objects.create(idea=idea, user=request.user)
     new_joined_user.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
