@@ -11,7 +11,7 @@ function OneIdea() {
     const [queryParameters] = useSearchParams()
     let idea_id = queryParameters.get('id')
     const [oneIdea, setOneIdea] = useState([])
-
+    // const [joinedUser, setjoinedUser] = useState([])
 
 
 
@@ -20,10 +20,17 @@ function OneIdea() {
         const auth = getAuth()
         if (auth) {
             getIdea(idea_id)
-                .then(res => setOneIdea(res.data))
+                .then(res => 
+                    {
+                        console.log('res.data')
+                        console.log(res.data)
+                        setOneIdea(res.data)
+                        // setjoinedUser(res.data.joinedUser)
+                    }
+                    )
                 .catch(res => {alert(res)})
         } else { navigate( '/welcome/') }
-        },[])
+        },[setOneIdea])
 
 
     function connectHandler(e) {
@@ -57,7 +64,10 @@ function OneIdea() {
         // window.location.reload(false)
     }}
 
-oneIdea.joinedUser is undefined
+    console.log('oneIdea')
+    console.log(oneIdea)
+    console.log(oneIdea.joinedUser)
+    console.log(oneIdea.title)
 
 
     return (
@@ -116,7 +126,7 @@ oneIdea.joinedUser is undefined
 
                                             <div className="col">
                                                 <div className="mt-2 text-center text-muted">
-                                                    <strong>oneIdea.rubric.rubirc_name</strong>
+                                                    <strong>{oneIdea.rubric.rubirc_name}</strong>
                                                 </div>
                                                 <div className="mt-2 text-center">
                                                     <h1>⭐⭐⭐⭐⭐</h1>
@@ -146,10 +156,10 @@ oneIdea.joinedUser is undefined
                                         <div className="accordion-item">
                                           <h2 className="accordion-header" id="flush-headingTwo">
                                             <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                               { oneIdea.joinedUser.length === 0 ?
+                                               {/* { oneIdea.joinedUser === undefined ?
                                                `Ты можешь первым присоедениться в команду`
                                               :
-                                              `Уже с нами ${oneIdea.joinedUser.length} человека`}
+                                              `Уже с нами ${oneIdea.joinedUser.length} человек`} */}
                                             </button>
                                           </h2>
                                           <div id="flush-collapseTwo" className="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
@@ -159,11 +169,13 @@ oneIdea.joinedUser is undefined
                                                <h3> Наша команда </h3>
                                                <div className="container-fluid">
                                                 <div className="row justify-content-between align-items-center g-2">
-                                                    {OneIdea.joinedUser.map( usr => {
-                                                       <div className="col-2">
-                                                            <p className="text-center">{usr.id}</p>
-                                                        </div> 
-                                                        })}
+                                                    {/* {oneIdea.joinedUser === undefined  ? 
+                                                         OneIdea.joinedUser.map( usr => 
+                                                            <div className="col-2">
+                                                                <p className="text-center">{usr.id}</p>
+                                                            </div> )
+                                                     :
+                                                     <p>'test'</p> }                                               */}
                                                 </div>
                                                </div>
                                             </div>
