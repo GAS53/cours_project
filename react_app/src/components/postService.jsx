@@ -47,8 +47,6 @@ function connectToIdea(id) {
     const data = { 
         idea: id,
         user: auth.id }
-        console.log('data')
-        console.log(data)
     return axiosService.post('join/', data, getConfig(true))
 } 
 
