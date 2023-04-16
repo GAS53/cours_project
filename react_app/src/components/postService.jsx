@@ -18,7 +18,7 @@ function getConfig(is_auth=true){
         headers: {"Content-Type": "application/json" },}
     if (is_auth) {
         const auth = loadAuth()
-        config['Authorization'] = `Bearer ${auth.access}`
+        config['Authorization'] = `Token ${auth.access}`
     }
     return config
 }
