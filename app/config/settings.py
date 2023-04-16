@@ -12,7 +12,7 @@ DEBUG = True
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('app.frontend.jwt_auth.JWTAuthentication',),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 15,
@@ -142,3 +142,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL= '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+AUTH_USER_MODEL = 'authapp.BaseIdeinerUser'
