@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect, render
@@ -51,9 +52,10 @@ def lk_edit(request):  # изменение профиля через форму
 
     if request.method == 'POST':
         user = BaseIdeinerUser.objects.filter(id=request.user.id).first()
+        print(request.POST)
 
-        if request.POST['login']: user.login = request.POST['login']
         if request.POST['first_name']: user.first_name = request.POST['first_name']
+        if request.POST['last_name']: user.last_name = request.POST['last_name']
         if request.POST['email']: user.email = request.POST['email']
         if request.POST['age']: user.age = request.POST['age']
 
@@ -275,12 +277,14 @@ def feedback_delete(request, pk):  # удаление отзыва при наж
 def joined_user_add(request, pk):  # добавление пользователя в проект через форму
 
     idea = Idea.objects.filter(pk=pk).first()
-    autor = request.user.last_name
+    # autor = request.user.last_name
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('authapp:login'))
 
-    if JoinedUser.objects.filter(idea=idea, autor=autor):
+    if JoinedUser.objects.filter(idea=idea, user=request.user):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-    new_joined_user = JoinedUser.objects.create(idea=idea, autor=autor)
+    new_joined_user = JoinedUser.objects.create(idea=idea, user=request.user)
     new_joined_user.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -303,9 +307,11 @@ from backend.models import LikesToIdea
 def like_add(request, pk): # добавление лайка на проект через кнопку
 
     idea = Idea.objects.filter(pk=pk).first()
-    autor = request.user.login
+    # autor = request.user.login
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('authapp:login'))
 
-    new_like = LikesToIdea.objects.create(idea=idea, autor=autor)
+    new_like = LikesToIdea.objects.create(idea=idea, autor=request.user)
     new_like.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
