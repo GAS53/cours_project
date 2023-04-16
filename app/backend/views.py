@@ -304,9 +304,9 @@ from backend.models import LikesToIdea
 def like_add(request, pk): # добавление лайка на проект через кнопку
 
     idea = Idea.objects.filter(pk=pk).first()
-    autor = request.user.login
+    # autor = request.user.login
 
-    new_like = LikesToIdea.objects.create(idea=idea, autor=autor)
+    new_like = LikesToIdea.objects.create(idea=idea, autor=request.user)
     new_like.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
