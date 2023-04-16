@@ -39,10 +39,10 @@
                         </li>
                         {% if user.is_superuser %}
                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">Админка</a></li>
-                        {% endif %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        {% endif %}
                         <li><a class="dropdown-item" href="{% url 'authapp:logout' %}">Выход</a></li>
                         {% else %}
                         <li><a class="dropdown-item" href="{% url 'authapp:login' %}">Вход</a></li>
