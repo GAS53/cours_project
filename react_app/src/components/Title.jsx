@@ -14,6 +14,8 @@ function Title({isVisable, togleVisable}) {
     // }, [localStorage.getItem('auth')])
     // const is_auth = false
 
+    console.log(user) 
+
 
     
 
@@ -60,6 +62,17 @@ function Title({isVisable, togleVisable}) {
                             <li className="nav-item">
                                 <Link to="register/" className="nav-link">Регистрация</Link>
                             </li>
+                            }
+                            {
+                                !user.is_superuser ? 
+                                    <li className="nav-item">
+                                        <p><strong>Вы вошли как администратор {user.login}</strong></p>
+                                        <Link to="adminview/" className="nav-link">Страница администратора</Link>
+                                    </li>
+                            :
+                                    <li className="nav-item">
+                                        <Link to="register/" className="nav-link">Регистрация</Link>
+                                    </li>
                             }
                             
 
