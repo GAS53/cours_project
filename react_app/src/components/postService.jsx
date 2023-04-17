@@ -73,6 +73,7 @@ function setInLocal(res){
         email: res.user.email,
         id: res.user.id,
         age: res.user.age,
+        is_superuser: res.user.is_superuser,
         }))
 }
 
@@ -91,6 +92,19 @@ function LikeIdea(data) {
     return axiosService.post('like/', data)
 }
 
+const getAllUsers = () => {
+    return axiosService.get('users')
+}
+
+function togleStatus(id) {
+    console.log("id\n", id)
+    const auth = loadAuth()
+    const data = { 
+        id: id,
+        is_superuser: true }
+    return axiosService.post('user/', data, getConfig(true))
+} 
+
 export {
     getAll,
     getAuth,
@@ -105,5 +119,7 @@ export {
     logout,
     regUser,
     LikeIdea,
+    getAllUsers,
+    togleStatus,
 
 }
