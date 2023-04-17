@@ -57,22 +57,19 @@ function Title({isVisable, togleVisable}) {
                             { user ?
                             <li className="nav-item">
                                 <p><strong>Вы вошли как {user.login}</strong></p>
+                                {
+                                    user.is_superuser ? 
+                                            <Link to="adminview/" className="nav-link">Страница администратора</Link>
+                                :
+                                        <li className="nav-item">
+                                            <Link to="register/" className="nav-link">Регистрация</Link>
+                                        </li>
+                                }
                             </li>
                             :
                             <li className="nav-item">
                                 <Link to="register/" className="nav-link">Регистрация</Link>
                             </li>
-                            }
-                            {
-                                !user.is_superuser ? 
-                                    <li className="nav-item">
-                                        <p><strong>Вы вошли как администратор {user.login}</strong></p>
-                                        <Link to="adminview/" className="nav-link">Страница администратора</Link>
-                                    </li>
-                            :
-                                    <li className="nav-item">
-                                        <Link to="register/" className="nav-link">Регистрация</Link>
-                                    </li>
                             }
                             
 
