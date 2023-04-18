@@ -20,7 +20,7 @@ class StaffOnly(BasePermission):
 
 
 
-def GenIdeasList(ideas):
+def GenIdeasList(ideas, user=None):
     
     # генератор списка идей.
     # создаёт словарь, в котором ключ это порядковое число, а значение это словарь с отзывами и идеями
@@ -30,9 +30,22 @@ def GenIdeasList(ideas):
 
     sl_ideas = {}
     a = 0
+    likes_user_pk = []
+    joines_user_pk = []
+    if user and user.is_authenticated:
+        likes_user_pk = LikesToIdea.objects.filter(autor=user).values_list('idea', flat=True)
+        joines_user_pk = JoinedUser.objects.filter(user=user).values_list('idea', flat=True)
     for idea in ideas:
+        liked = False
+        joined = False
+        if idea.pk in likes_user_pk:
+            liked = True
+        if idea.pk in joines_user_pk:
+            joined = True
+
         a += 1
-        sl_ideas[a] = {"feedback": Feedback.objects.filter(idea=idea), "idea": idea}
+        sl_ideas[a] = {"feedback": Feedback.objects.filter(idea=idea),
+                       "liked": liked, "joined": joined, "idea": idea}
 
     return sl_ideas
 
@@ -72,7 +85,7 @@ def lk_edit(request):  # изменение профиля через форму
 def main(request):  # список всех идей.
     title = "Идеи"
 
-    ideas = GenIdeasList(Idea.objects.all())
+    ideas = GenIdeasList(Idea.objects.all(), request.user)
 
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
