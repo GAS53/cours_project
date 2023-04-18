@@ -16,6 +16,9 @@ import backend.models as bk_models
 from authapp.models import BaseIdeinerUser
 
 
+
+
+
 class AbstractViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['updated', 'created']
@@ -254,7 +257,7 @@ class IdeaViewSet(AbstractViewSet):
 
 class NewRubricViewSet(AbstractViewSet):
     http_method_names = ('post',)
-    permission_classes = (AllowAny,)  # UserPermission !!!!!!!!!!!
+    permission_classes = (UserPermission,)  # UserPermission !!!!!!!!!!!
     serializer_class = fr_serializers.RubricSerializer
 
 
