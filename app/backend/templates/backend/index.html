@@ -134,9 +134,15 @@
 
                                     <div class="col">
                                         <div class="serviceButton">
+                                            {% if item.liked %}
+                                            <a class="nav-link " href="{% url 'backend:like_delete' item.idea.pk %}"><img
+                                                    class="service-img" style="background-color: red;"
+                                                    src="https://cdn-icons-png.flaticon.com/128/1077/1077035.png"></a>
+                                            {% else %}
                                             <a class="nav-link " href="{% url 'backend:like_add' item.idea.pk %}"><img
                                                     class="service-img"
                                                     src="https://cdn-icons-png.flaticon.com/128/1077/1077035.png"></a>
+                                            {% endif %}
                                         </div>
                                     </div>
 
