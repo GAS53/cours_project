@@ -186,7 +186,9 @@ def idea_card(request, pk): # карта идеи
     rating_sum = 0
     for feedback in feedbacks:
         rating_sum += feedback.rating
-    rating = round(rating_sum / len(feedbacks))*'⭐'
+    rating = ''
+    if len(feedbacks):
+        rating = round(rating_sum / len(feedbacks))*'⭐'
 
 
     content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 

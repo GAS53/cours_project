@@ -110,7 +110,7 @@
                                         выйти из проекта</a>
                                     {% else %}
                                     <a href="{% url 'backend:joined_user_add' item.idea.pk %}" style="display: block;">
-                                        присоедениться к проекту</a>
+                                        присоединиться к проекту</a>
                                     {% endif %}
 
                                     {% if user.is_superuser or item.idea.autor == request.user %}
