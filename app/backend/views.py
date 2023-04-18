@@ -34,7 +34,7 @@ def GenIdeasList(ideas, user=None):
     joines_user_pk = []
     if user and user.is_authenticated:
         likes_user_pk = LikesToIdea.objects.filter(autor=user).values_list('idea', flat=True)
-        joines_user_pk = JoinedUser.objects.filter(user=user).values_list('idea', flat=True)
+        joines_user_pk = JoinedUser.objects.filter(user=user, deleted=False).values_list('idea', flat=True)
     for idea in ideas:
         liked = False
         joined = False
@@ -294,10 +294,13 @@ def joined_user_add(request, pk):  # добавление пользовател
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('authapp:login'))
 
-    if JoinedUser.objects.filter(idea=idea, user=request.user):
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-
-    new_joined_user = JoinedUser.objects.create(idea=idea, user=request.user)
+    # if JoinedUser.objects.filter(idea=idea, user=request.user):
+    #     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    
+    new_joined_user = JoinedUser.objects.filter(idea=idea, user=request.user).first()
+    if not new_joined_user:
+        new_joined_user = JoinedUser.objects.create(idea=idea, user=request.user)
+    new_joined_user.deleted = False
     new_joined_user.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -305,11 +308,11 @@ def joined_user_add(request, pk):  # добавление пользовател
 
 def joined_user_delete(request, pk):  # удаление пользователя из проекта при нажатии на кнопку
 
-    idea = Feedback.objects.filter(pk=pk).first()
-    autor = request.user.last_name
+    idea = Idea.objects.filter(pk=pk).first()
 
-    joined_user = JoinedUser.objects.filter(idea=idea, autor=autor).first()
+    joined_user = JoinedUser.objects.filter(idea=idea, user=request.user).first()
     joined_user.delete()
+    joined_user.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
