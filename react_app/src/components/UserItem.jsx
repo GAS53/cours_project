@@ -6,7 +6,7 @@ const UserItem = ({ userItem }) => {
     console.log(togleStatus)
 
     function togleHandler(e) {
-        togleStatus(userItem.id)
+        togleStatus(userItem.id, userItem.is_active)
             .then(res => {
                     alert(`Статус пользователя изменен ${userItem.login}`)
                 })

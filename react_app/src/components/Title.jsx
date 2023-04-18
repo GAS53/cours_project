@@ -43,6 +43,10 @@ function Title({isVisable, togleVisable}) {
                                 <li className="nav-item">
                                     <a className="nav-link" onClick={logout} href="/" tabIndex="-1" aria-disabled="true">Выход</a>
                                 </li>
+                                <li className="nav-item">
+                                        <p><strong>Вы вошли как администратор {user.login}</strong></p>
+                                        <Link to="adminview/" className="nav-link">Страница администратора</Link>
+                                </li>
                             </div>
 
                             :
@@ -63,7 +67,7 @@ function Title({isVisable, togleVisable}) {
                                 <Link to="register/" className="nav-link">Регистрация</Link>
                             </li>
                             }
-                            {
+                            {/* {
                                 !user.is_superuser ? 
                                     <li className="nav-item">
                                         <p><strong>Вы вошли как администратор {user.login}</strong></p>
@@ -73,7 +77,7 @@ function Title({isVisable, togleVisable}) {
                                     <li className="nav-item">
                                         <Link to="register/" className="nav-link">Регистрация</Link>
                                     </li>
-                            }
+                            } */}
                             
 
                         </ul>
