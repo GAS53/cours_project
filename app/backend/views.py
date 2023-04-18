@@ -183,9 +183,15 @@ def idea_card(request, pk): # карта идеи
     else:
         i_joined = False
 
+    rating_sum = 0
+    for feedback in feedbacks:
+        rating_sum += feedback.rating
+    rating = round(rating_sum / len(feedbacks))*'⭐'
+
 
     content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 
-               "likes": likes, "i_joined": i_joined, "media_url": settings.MEDIA_URL}
+               "likes": likes, "i_joined": i_joined, 'rating': rating ,
+               "media_url": settings.MEDIA_URL}
 
     return render(request, "backend/idea_card.html", content)
 
