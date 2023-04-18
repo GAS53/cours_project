@@ -33,7 +33,7 @@ def GenIdeasList(ideas, user=None):
     likes_user_pk = []
     joines_user_pk = []
     if user and user.is_authenticated:
-        likes_user_pk = LikesToIdea.objects.filter(autor=user).values_list('idea', flat=True)
+        likes_user_pk = LikesToIdea.objects.filter(autor=user, deleted=False).values_list('idea', flat=True)
         joines_user_pk = JoinedUser.objects.filter(user=user, deleted=False).values_list('idea', flat=True)
     for idea in ideas:
         liked = False
@@ -178,9 +178,14 @@ def idea_card(request, pk): # карта идеи
     feedbacks = Feedback.objects.filter(idea=idea)
     joined_users = JoinedUser.objects.filter(idea=idea)
     likes = LikesToIdea.objects.filter(idea=idea)
+    if request.user and JoinedUser.objects.filter(idea=idea, user=request.user, deleted=False):
+        i_joined = True
+    else:
+        i_joined = False
+
 
     content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 
-               "likes": likes, "media_url": settings.MEDIA_URL}
+               "likes": likes, "i_joined": i_joined, "media_url": settings.MEDIA_URL}
 
     return render(request, "backend/idea_card.html", content)
 
@@ -296,7 +301,7 @@ def joined_user_add(request, pk):  # добавление пользовател
 
     # if JoinedUser.objects.filter(idea=idea, user=request.user):
     #     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-    
+
     new_joined_user = JoinedUser.objects.filter(idea=idea, user=request.user).first()
     if not new_joined_user:
         new_joined_user = JoinedUser.objects.create(idea=idea, user=request.user)
@@ -327,7 +332,10 @@ def like_add(request, pk): # добавление лайка на проект �
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('authapp:login'))
 
-    new_like = LikesToIdea.objects.create(idea=idea, autor=request.user)
+    new_like = LikesToIdea.objects.filter(idea=idea, autor=request.user).first()
+    if not new_like:
+        new_like = LikesToIdea.objects.create(idea=idea, autor=request.user)
+    new_like.deleted = False
     new_like.save()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -335,10 +343,10 @@ def like_add(request, pk): # добавление лайка на проект �
 
 def like_delete(request, pk): # удаление лайка на проект через кнопку
 
-    idea = Feedback.objects.filter(pk=pk).first()
-    autor = request.user.nickname
+    idea = Idea.objects.filter(pk=pk).first()
+    # autor = request.user.nickname
 
-    like = LikesToIdea.objects.filter(idea=idea, autor=autor).first()
+    like = LikesToIdea.objects.filter(idea=idea, autor=request.user).first()
     like.delete()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))

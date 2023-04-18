@@ -79,11 +79,19 @@
                                         <div class="mt-2 text-center">
                                             <h2>⭐⭐⭐⭐⭐</h2>
                                         </div>
+                                        {% if i_joined %}
                                         <div class="mt-2 d-grid gap-2">
-                                            <button type="button" class="btn mainButton">
-                                                Вступить в команду
-                                            </button>
+                                            <a href="{% url 'backend:joined_user_delete' idea.pk %}" class="btn mainButton">
+                                                Выйти из команды
+                                            </a>
                                         </div>
+                                        {% else %}
+                                        <div class="mt-2 d-grid gap-2">
+                                            <a href="{% url 'backend:joined_user_add' idea.pk %}" class="btn mainButton">
+                                                Вступить в команду
+                                            </a>
+                                        </div>
+                                        {% endif %}
                                         <div class="mt-2 d-grid gap-2">
                                             <button type="button" class="btn btn-outline-warning">
                                                 Оставить отзыв
