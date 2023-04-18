@@ -1,14 +1,16 @@
 
 import uuid
+import datetime
 
 from django.contrib.auth.models import  AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.contrib.auth.validators import UnicodeUsernameValidator
+import jwt
 
 from backend import models as back_models
-
+from config import settings
 # " все картинки загружаются в папку users_avatars. она создаётся авытоматически, но можно её переместить в другую папку, " \
 # " например, в static/img, но тогда надо переписать путь:" \
 # " upload_to='static/img/users_avatars' "
@@ -53,8 +55,10 @@ class UserManager(BaseUserManager):
 def path_to_avatars(instance, filename):
         return 'user_{0}/{1}'.format(instance.id, filename)
 
-# заменен  AbstractUser т.к. перезаписываются поля дублировние при наследовании
+
 class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin): 
+    
+    
     login_validator = UnicodeUsernameValidator()
 
     id = models.UUIDField(db_index=True, primary_key=True, unique=True, default=uuid.uuid4, editable=False)
@@ -96,10 +100,32 @@ class BaseIdeinerUser(AbstractBaseUser, PermissionsMixin):
     def name(self):
         return f"{self.login} {self.first_name}"
     
-    objects = UserManager()
-
-
     
+    objects = UserManager()
+    
+    @property
+    def token(self):
+        """
+        Позволяет получить токен пользователя путем вызова user.token, вместо
+        user._generate_jwt_token(). Декоратор @property выше делает это
+        возможным. token называется "динамическим свойством".
+        """
+        return self._generate_jwt_token()
+
+
+    def _generate_jwt_token(self):
+        """
+        Генерирует веб-токен JSON, в котором хранится идентификатор этого
+        пользователя, срок действия токена составляет 1 день от создания
+        """
+        dt = datetime.now() + datetime.timedelta(days=1)
+
+        token = jwt.encode({
+                'id': self.pk,
+                'exp': int(dt.strftime('%s'))
+                }, settings.SECRET_KEY, algorithm='HS256')
+
+        return token.decode('utf-8')
 
 
 

@@ -15,6 +15,7 @@ import OneIdea from './components/OneIdea'
 import Main from './components/Main';
 import Title from './components/Title'
 import Welcome from './components/Welcome';
+import AdminView from './components/AdminView';
 
 function App() {
   const [isVisable, togleVisable] = useModal()
@@ -62,6 +63,10 @@ function App() {
         {
           path: "welcome/",
           element: <Welcome />,
+        },
+        {
+          path: "adminview/",
+          element: <AdminView />,
         },
 
       ]
