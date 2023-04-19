@@ -1,13 +1,15 @@
+from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
-from django.conf import settings
-from django.shortcuts import HttpResponseRedirect, render
-from .models import Idea, Feedback, Rubric
-from authapp.models import BaseIdeinerUser
-from django.contrib.auth.decorators import user_passes_test
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.permissions import BasePermission
 
+from authapp.models import BaseIdeinerUser
 from backend.models import JoinedUser
+from .models import Idea, Feedback, Rubric
+
+
 class Temp(TemplateView):
     template_name = 'backend/index.html'
 
@@ -17,11 +19,7 @@ class StaffOnly(BasePermission):
         return request.user.is_staff
 
 
-
-
-
 def GenIdeasList(ideas, user=None):
-    
     # генератор списка идей.
     # создаёт словарь, в котором ключ это порядковое число, а значение это словарь с отзывами и идеями
     # возвращает словарь со со всеми отзывами и идями
@@ -51,6 +49,7 @@ def GenIdeasList(ideas, user=None):
 
 
 """ Личный кабинет """
+
 
 def lk(request):  # профиль
 
@@ -90,15 +89,15 @@ def main(request):  # список всех идей.
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
     return render(request, "backend/index.html", content)
- 
 
 
 """ админка """
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def admin(request):
     title = "Админка"
-    
+
     ideas = GenIdeasList(Idea.objects.all())
 
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
@@ -132,6 +131,7 @@ def search(request):
 
 """ идеи """
 
+
 @user_passes_test(lambda u: u.is_authenticated)
 def my_ideas(request):
     title = "Мои идели"
@@ -141,7 +141,6 @@ def my_ideas(request):
     content = {"title": title, "ideas": ideas, "media_url": settings.MEDIA_URL}
 
     return render(request, "backend/my_ideas.html", content)
-
 
 
 def idea_add(request):  # добавление идеи через форму
@@ -172,7 +171,7 @@ def idea_add(request):  # добавление идеи через форму
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
-def idea_card(request, pk): # карта идеи
+def idea_card(request, pk):  # карта идеи
     title = "Идея"
     idea = Idea.objects.filter(pk=pk).first()
     feedbacks = Feedback.objects.filter(idea=idea)
@@ -188,11 +187,10 @@ def idea_card(request, pk): # карта идеи
         rating_sum += feedback.rating
     rating = ''
     if len(feedbacks):
-        rating = round(rating_sum / len(feedbacks))*'⭐'
+        rating = round(rating_sum / len(feedbacks)) * '⭐'
 
-
-    content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users, 
-               "likes": likes, "i_joined": i_joined, 'rating': rating ,
+    content = {"title": title, "idea": idea, "feedbacks": feedbacks, "joined_users": joined_users,
+               "likes": likes, "i_joined": i_joined, 'rating': rating,
                "media_url": settings.MEDIA_URL}
 
     return render(request, "backend/idea_card.html", content)
@@ -212,30 +210,33 @@ def idea_card_delete(request, pk):  # удаление идеи при нажа�
 
 
 def idea_edit(request, pk):  # изменение идеи через форму
+    idea = Idea.objects.filter(pk=pk).first()
 
     if request.method == 'POST':
-
-        idea = Idea.objects.filter(pk=pk).first()
-
         # проверка на наличие ввода в поля. есть данные, то изменяет, если нет то пропускает
 
-        title = request.POST['title-edit']
+        title = request.POST['title']
         if title: idea.title = title
 
-        rubrics = request.POST['rubrics-edit']
-        if rubrics: idea.rubrics = rubrics
+        rubric = request.POST['rubric']
+        if rubric:
+            rubric_instance = Rubric.objects.filter(rubirc_name=rubric).first()
+            if rubric_instance:
+                idea.rubric = rubric_instance
 
-        preview = request.POST['preview-edit']
+        preview = request.POST['preview']
         if preview: idea.preview = preview
 
-        body = request.POST['body-edit']
+        body = request.POST['body']
         if body: idea.body = body
 
         idea.save()
 
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+        return HttpResponseRedirect(reverse('backend:idea_card', args=(pk,)))
 
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    content = {"idea": idea}
+
+    return render(request, "backend/idea_edit.html", content)
 
 
 def idea_delete(request, pk):  # удаление идеи при нажатии на кнопку
@@ -243,16 +244,19 @@ def idea_delete(request, pk):  # удаление идеи при нажатии
     idea = Idea.objects.filter(pk=pk)
     idea.delete()
 
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return HttpResponseRedirect(reverse('backend:index'))
 
 
 """ отзывы. добавление, удаление, изменение """
 
 
 def feedback_add(request, pk):  # добавление отзыва через форму
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('authapp:login'))
+
+    idea = Idea.objects.filter(pk=pk).first()
 
     if request.method == 'POST':
-        idea = Idea.objects.filter(pk=pk).first()
 
         try:
             rating = request.POST['rating']
@@ -260,12 +264,14 @@ def feedback_add(request, pk):  # добавление отзыва через �
             rating = 5
         feedback = request.POST['feedback_text']
 
-        new_feedback = Feedback.objects.create(idea=idea, rating=rating, feedback=feedback)
+        new_feedback = Feedback.objects.create(idea=idea, liker=request.user,
+                                               rating=rating, feedback=feedback)
         new_feedback.save()
+        return HttpResponseRedirect(reverse('backend:idea_card', args=(pk,)))
 
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    content = {"idea": idea}
 
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return render(request, "backend/feedback.html", content)
 
 
 def feedback_edit(request, pk):  # изменение отзыва через форму
@@ -333,7 +339,8 @@ def joined_user_delete(request, pk):  # удаление пользовател�
 """ Другие пользователи могут поставить лпйк к идее """
 from backend.models import LikesToIdea
 
-def like_add(request, pk): # добавление лайка на проект через кнопку
+
+def like_add(request, pk):  # добавление лайка на проект через кнопку
 
     idea = Idea.objects.filter(pk=pk).first()
     # autor = request.user.login
@@ -349,7 +356,7 @@ def like_add(request, pk): # добавление лайка на проект �
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
-def like_delete(request, pk): # удаление лайка на проект через кнопку
+def like_delete(request, pk):  # удаление лайка на проект через кнопку
 
     idea = Idea.objects.filter(pk=pk).first()
     # autor = request.user.nickname
@@ -358,4 +365,3 @@ def like_delete(request, pk): # удаление лайка на проект ч
     like.delete()
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-
