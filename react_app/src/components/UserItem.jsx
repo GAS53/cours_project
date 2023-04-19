@@ -8,36 +8,43 @@ const UserItem = ({ userItem }) => {
     function togleHandler(e) {
         togleStatus(userItem.id, userItem.is_active)
             .then(res => {
-                    alert(`Статус пользователя изменен ${userItem.login}`)
-                })
+                alert(`Статус пользователя изменен ${userItem.login}`)
+            })
             .catch((error) => {
-                if (error.response.status === 423 ) {
-                        alert(`вы вышли из команды ${userItem.login}`)
-                    } else {
-                    alert(`Ошибка изменения статуса  ${error.message}`)}})
+                alert(`Ошибка изменения статуса  ${error.message}`)
+            })
     }
 
     return (
 
-        <div class="container-fluid">
-            <div class="row justify-content-center align-items-center g-2">
+        <div class="container mb-2">
 
-                <div class="col">{userItem.login}</div>
-                <div class="col">{userItem.email}</div>
-                <div class="col">{userItem.is_active ? "✅" : '❌'}</div>
+            <div class="row">
                 <div class="col">
-                    {userItem.is_active ?
-                        <button type="button" onClick={togleHandler} className="btn btn-outline-danger">
-                            Заблокировать
-                        </button>
-                        :
-                        <button type="button" onClick={togleHandler} className="btn btn-outline-success">
-                            Разблокировать
-                        </button>
-                    }
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row justify-content-center align-items-center g-2">
 
+                                <div class="col">{userItem.login}</div>
+                                <div class="col">{userItem.email}</div>
+                                <div class="col">{userItem.is_active ? "✅" : '❌'}</div>
+                                <div class="col">
+                                    {userItem.is_active ?
+                                        <button type="button" onClick={togleHandler} className="btn btn-outline-danger">
+                                            Заблокировать
+                                        </button>
+                                        :
+                                        <button type="button" onClick={togleHandler} className="btn btn-outline-success">
+                                            Разблокировать
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </div>
 

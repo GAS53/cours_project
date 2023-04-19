@@ -21,6 +21,7 @@ const AdminView = (props) => {
                 <div className="col">
                     <div class="container-fluid">
                         <div class="row justify-content-center align-items-center g-2">
+                            <div class="col-1"> </div>
                             <div class="col">Логин</div>
                             <div class="col">Емаил</div>
                             <div class="col">Статус</div>
