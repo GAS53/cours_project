@@ -115,6 +115,10 @@
                                     {% endif %}
 
                                     {% if user.is_superuser or item.idea.autor == request.user %}
+                                    <a href="{% url 'backend:idea_edit' item.idea.pk %}">редактировать идею</a>
+                                    {% endif %}
+
+                                    {% if user.is_superuser or item.idea.autor == request.user %}
                                     <a href="{% url 'backend:idea_delete' item.idea.pk %}">удалить идею</a>
                                     {% endif %}
 

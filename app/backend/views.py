@@ -210,30 +210,33 @@ def idea_card_delete(request, pk):  # удаление идеи при нажа�
 
 
 def idea_edit(request, pk):  # изменение идеи через форму
+    idea = Idea.objects.filter(pk=pk).first()
 
     if request.method == 'POST':
-
-        idea = Idea.objects.filter(pk=pk).first()
-
         # проверка на наличие ввода в поля. есть данные, то изменяет, если нет то пропускает
 
-        title = request.POST['title-edit']
+        title = request.POST['title']
         if title: idea.title = title
 
-        rubrics = request.POST['rubrics-edit']
-        if rubrics: idea.rubrics = rubrics
+        rubric = request.POST['rubric']
+        if rubric:
+            rubric_instance = Rubric.objects.filter(rubirc_name=rubric).first()
+            if rubric_instance:
+                idea.rubric = rubric_instance
 
-        preview = request.POST['preview-edit']
+        preview = request.POST['preview']
         if preview: idea.preview = preview
 
-        body = request.POST['body-edit']
+        body = request.POST['body']
         if body: idea.body = body
 
         idea.save()
 
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+        return HttpResponseRedirect(reverse('backend:idea_card', args=(pk,)))
 
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    content = {"idea": idea}
+
+    return render(request, "backend/idea_edit.html", content)
 
 
 def idea_delete(request, pk):  # удаление идеи при нажатии на кнопку
