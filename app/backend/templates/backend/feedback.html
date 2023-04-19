@@ -1,0 +1,43 @@
+{% extends 'backend/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<form class="form-horizontal" action="{% url 'backend:feedback_add' idea.pk%}" method="post">
+    {% csrf_token %}
+    <div class="row justify-content-center align-items-center g-2">
+        <div class="row">
+            <div class="col">
+                <h2>Оставить отзыв на идею: {{ idea.title }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center align-items-center g-2">
+        <div class="row">
+            <div class="col-2">
+                <label class="form-label">Рейтинг</label>
+                <select class="form-control" name="rating">
+                    <option value="1">⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">Отзыв на идею</label>
+                <input type="text" class="form-control" name="feedback_text"
+                       placeholder="Текст отзыва на идею">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row justify-content-center align-items-center g-2">
+        <div class="row">
+            <div class="col">
+                <input class="form-control" type="submit" value="Отправить отзыв">
+            </div>
+        </div>
+</form>
+
+{% endblock content %}
