@@ -1,6 +1,8 @@
-import './styles/bootstrap.min.css';
 import './styles/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// Bootstrap Bundle JS
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import useModal from './services/castomHooks/useModal';
