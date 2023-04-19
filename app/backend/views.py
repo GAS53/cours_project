@@ -241,7 +241,7 @@ def idea_delete(request, pk):  # удаление идеи при нажатии
     idea = Idea.objects.filter(pk=pk)
     idea.delete()
 
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return HttpResponseRedirect(reverse('backend:index'))
 
 
 """ отзывы. добавление, удаление, изменение """
