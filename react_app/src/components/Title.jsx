@@ -6,6 +6,8 @@ import LogIn from "./LogIn";
 import { useNavigate } from "react-router-dom";
 import { logout, getAuth } from '../components/postService'
 
+import MenuDropdown from './MenuDropdown'
+
 function Title({isVisable, togleVisable}) {
     const user = getAuth()
     const navigate = useNavigate();
@@ -29,62 +31,16 @@ function Title({isVisable, togleVisable}) {
                             <li className="nav-item">
                                 <Link to="/" className="nav-link">Главная</Link>
                             </li>
+                            <MenuDropdown/>
                             {user ?
-                            <div>
-                                <li className="nav-item">
-                                    <Link to="user/" className="nav-link">Личный кабинет</Link> 
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="new/" className="nav-link">Добавить идею</Link> 
-                                </li>
-                                <li className="nav-item">
-                                    <Link to="new_rubric/" className="nav-link">Добавить рубрику</Link> 
-                                </li>
-                                {
-                                user.is_superuser ?                                
-                                <li className="nav-item">
-                                        <Link to="adminview/" className="nav-link">Страница администратора</Link>
-                                </li>
-                                :
-                                <br/>
-                                }
-                                <li className="nav-item">
-                                    <a className="nav-link" onClick={logout} href="/" tabIndex="-1" aria-disabled="true">Выход</a>
-                                </li>
-
-                            </div>
-
-                            :
-                            <div>
-                                <li className="nav-item">
-                                    <Link to="login/" className="nav-link">Войти</Link>
-                                     {/* <Button text="Войти в систему" type="button" styles="mainButton" action={togleVisable}/> */}
-                                </li>
-
-                            </div>
-                            }
-                            { user ?
                             <li className="nav-item">
                                 <p><strong>Вы вошли как {user.login}</strong></p>
                             </li>
-                            :
-                            <li className="nav-item">
-                                <Link to="register/" className="nav-link">Регистрация</Link>
-                            </li>
-                            }
-                            {/* {
-                                !user.is_superuser ? 
-                                    <li className="nav-item">
-                                        <p><strong>Вы вошли как администратор {user.login}</strong></p>
-                                        <Link to="adminview/" className="nav-link">Страница администратора</Link>
-                                    </li>
-                            :
-                                    <li className="nav-item">
-                                        <Link to="register/" className="nav-link">Регистрация</Link>
-                                    </li>
-                            } */}
-                            
 
+                            :
+                            <div>
+                            </div>
+                            }
                         </ul>
                             
 
