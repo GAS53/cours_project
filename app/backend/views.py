@@ -34,6 +34,7 @@ def GenIdeasList(ideas, user=None):
         likes_user_pk = LikesToIdea.objects.filter(autor=user, deleted=False).values_list('idea', flat=True)
         joines_user_pk = JoinedUser.objects.filter(user=user, deleted=False).values_list('idea', flat=True)
     for idea in ideas:
+        count_likes = LikesToIdea.objects.filter(idea=idea, deleted=False).count()
         liked = False
         joined = False
         if idea.pk in likes_user_pk:
@@ -43,7 +44,8 @@ def GenIdeasList(ideas, user=None):
 
         a += 1
         sl_ideas[a] = {"feedback": Feedback.objects.filter(idea=idea),
-                       "liked": liked, "joined": joined, "idea": idea}
+                       "liked": liked, "joined": joined,
+                       'count_likes': count_likes, "idea": idea}
 
     return sl_ideas
 
@@ -176,7 +178,7 @@ def idea_card(request, pk):  # карта идеи
     idea = Idea.objects.filter(pk=pk).first()
     feedbacks = Feedback.objects.filter(idea=idea)
     joined_users = JoinedUser.objects.filter(idea=idea)
-    likes = LikesToIdea.objects.filter(idea=idea)
+    likes = LikesToIdea.objects.filter(idea=idea, deleted=False).count()
     if request.user and JoinedUser.objects.filter(idea=idea, user=request.user, deleted=False):
         i_joined = True
     else:

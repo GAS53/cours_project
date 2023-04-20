@@ -55,7 +55,7 @@ class UserSerializer(AbstractSerializer):
     '''вложенные методы не проверены'''
     class Meta:
         model = BaseIdeinerUser
-        fields = ['id', 'login', 'first_name', 'last_name', 'email', 'age', 'password', 'is_superuser', 'id', 'avatar']
+        fields = ['id', 'login', 'first_name', 'last_name', 'email', 'age', 'password', 'is_superuser', 'id', 'avatar', 'is_active']
         read_only_field = ['is_active']
 
 
