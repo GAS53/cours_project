@@ -95,6 +95,11 @@
                                     <div class="col-1 my-auto">
                                         <small class="text-muted">(1)</small>
                                     </div>
+
+                                    <div class="col-1 my-auto">
+                                        <img class="service-img" src="{% static '/img/like.png' %}">
+                                        <small class="text-muted">({{ item.count_likes }})</small>
+                                    </div>
                                     <div class="row justify-content-center align-items-center g-2">
                                         <div class="col">
                                             <p class="card-text">Описание</p>
