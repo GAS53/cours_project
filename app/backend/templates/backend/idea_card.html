@@ -60,6 +60,16 @@
                                             <p class="card-text">
                                                 <small class="text-muted">Опубликовано {{ idea.created }}</small>
                                             </p>
+                                            <p>
+                                                {% if user.is_superuser or item.idea.autor == request.user %}
+                                                <a href="{% url 'backend:idea_edit' idea.pk %}">редактировать
+                                                    идею</a>
+                                                {% endif %}
+                                            </p>
+                                            <p> {% if user.is_superuser or item.idea.autor == request.user %}
+                                                <a href="{% url 'backend:idea_delete' idea.pk %}">удалить идею</a>
+                                                {% endif %}
+                                            </p>
                                         </div>
                                     </div>
 
@@ -77,17 +87,28 @@
                                             <strong>{{ idea.rubric.rubirc_name }}</strong>
                                         </div>
                                         <div class="mt-2 text-center">
-                                            <h2>⭐⭐⭐⭐⭐</h2>
+                                            <h2>{{ rating }}</h2>
                                         </div>
+                                        {% if i_joined %}
                                         <div class="mt-2 d-grid gap-2">
-                                            <button type="button" class="btn mainButton">
+                                            <a href="{% url 'backend:joined_user_delete' idea.pk %}"
+                                               class="btn mainButton">
+                                                Выйти из команды
+                                            </a>
+                                        </div>
+                                        {% else %}
+                                        <div class="mt-2 d-grid gap-2">
+                                            <a href="{% url 'backend:joined_user_add' idea.pk %}"
+                                               class="btn mainButton">
                                                 Вступить в команду
-                                            </button>
+                                            </a>
                                         </div>
+                                        {% endif %}
                                         <div class="mt-2 d-grid gap-2">
-                                            <button type="button" class="btn btn-outline-warning">
+                                            <a href="{% url 'backend:feedback_add' idea.pk %}"
+                                               class="btn btn-outline-warning">
                                                 Оставить отзыв
-                                            </button>
+                                            </a>
                                         </div>
                                         <div class="mt-2 d-grid gap-2">
                                             <button type="button" class="btn btn-outline-danger">

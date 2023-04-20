@@ -96,13 +96,12 @@ const getAllUsers = () => {
     return axiosService.get('users')
 }
 
-function togleStatus(id) {
+function togleStatus(id, status) {
     console.log("id\n", id)
     const auth = loadAuth()
     const data = { 
-        id: id,
-        is_superuser: true }
-    return axiosService.post('user/', data, getConfig(true))
+        is_active: !status }
+    return axiosService.patch(`users/${id}/`, data, getConfig(true))
 } 
 
 export {
