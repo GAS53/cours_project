@@ -10,6 +10,8 @@ function OneIdea() {
     const navigate = useNavigate();
     const [queryParameters] = useSearchParams()
     const idea_id = queryParameters.get('id')
+    console.log('idea_id')
+    console.log(idea_id)
     const [ myId, setMyId ] = useState()
     const [oneIdea, setOneIdea] = useState([])
 

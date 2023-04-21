@@ -63,6 +63,9 @@ function postIdea(form) {
 }
 
 function setInLocal(res){
+    console.log("resresresresresres")
+    console.log(res.user.id)
+    console.log(res)
     localStorage.setItem("auth", JSON.stringify({
         access: res.access,
         refresh: res.refresh,
