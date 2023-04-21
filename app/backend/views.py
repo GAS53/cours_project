@@ -174,6 +174,9 @@ def idea_add(request):  # добавление идеи через форму
 
 
 def idea_card(request, pk):  # карта идеи
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('authapp:login'))
+    
     title = "Идея"
     idea = Idea.objects.filter(pk=pk).first()
     feedbacks = Feedback.objects.filter(idea=idea)
