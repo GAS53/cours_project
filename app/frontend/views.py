@@ -65,7 +65,7 @@ class LoginViewSet(AbstractViewSet):
 
 class GetIdeaViewSet(AbstractViewSet):
     serializer_class = fr_serializers.GetIdeaSerializer
-    permission_classes = (AllowAny,) # IsAuthenticated  исправить когда django примет токен
+    permission_classes = (IsAuthenticated,) # IsAuthenticated  исправить когда django примет токен
     http_method_names = ['get']
 
     def get_object(self):

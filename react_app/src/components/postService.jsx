@@ -14,13 +14,14 @@ function loadAuth() {
 }
 
 function getConfig(is_auth=true){
-    const config = {
-        headers: {"Content-Type": "application/json" },}
+    const headers = {
+        "Content-Type": "application/json" }
     if (is_auth) {
         const auth = loadAuth()
-        config['Authorization'] = `Token ${auth.access}`
+        headers['Authorization'] = `Bearer ${auth.access}`
+
     }
-    return config
+    return headers
 }
 
 
@@ -39,7 +40,7 @@ function getAuth() {
 
 
 function getIdea(id) {
-    return axiosService.get(`idea/${id}`, getConfig())
+    return axiosService.get(`idea/${id}/`, {'headers': getConfig()} )
 }
 
 function connectToIdea(id) {

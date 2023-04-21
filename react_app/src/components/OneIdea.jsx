@@ -21,8 +21,9 @@ function OneIdea() {
         const auth = getAuth()
         console.log('auth')
         console.log(auth)
-        setMyId(auth.id)
+        
         if (auth) {
+            setMyId(auth.id)
             getIdea(idea_id)
                 .then(res =>  { setOneIdea(res.data) })
                 .catch(res => {alert(res)})
