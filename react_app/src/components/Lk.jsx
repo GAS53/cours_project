@@ -28,12 +28,6 @@ const Lk = (props) => {
     return (
         <div className="container-md mt-5">
             <div className="row justify-content-center align-items-top">
-
-                <div className="col-4">
-                    <img src={im.avatar}
-                        className="img-fluid img-thumbnail rounded" alt="Аватар" />
-                    <h3>{im.username}</h3>
-                </div>
                 <div className="col-8">
                     {
                         im.map((values, index) => <RowTwoValues values={values} key={index}/>)

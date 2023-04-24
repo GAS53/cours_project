@@ -13,17 +13,20 @@ router.register(r'join', views.JoinToIdea, basename='join')
 router.register(r'new_rubric', views.NewRubricViewSet, basename='new_rubric')
 router.register(r'rubrics', views.AllRubricsViewSet, basename='rubrics')
 router.register(r'like', views.LikesViewSet, basename='like')
-
-
-router.register(r'users', views.UserViewSet, basename='users')
-# router.register(r'rubrics', views.RubricViewSet, basename='rubrics')
-# router.register(r'ideas', views.IdeaViewSet, basename='ideas')
-router.register(r'jusers', views.JoinedUserViewSet, basename='jusers')
-# router.register(r'likes', views.LikesViewSet, basename='likes')
-router.register(r'feedback', views.FeedbackViewSet, basename='feedback')
-router.register(r'register', views.RegisterViewSet, basename='register'),
 router.register(r'login', views.LoginViewSet, basename='login'),
 router.register(r'refresh', views.RefreshViewSet, basename='refresh'),
+
+
+
+
+# router.register(r'users', views.UserViewSet, basename='users')
+# router.register(r'rubrics', views.RubricViewSet, basename='rubrics')
+# router.register(r'ideas', views.IdeaViewSet, basename='ideas')
+# router.register(r'jusers', views.JoinedUserViewSet, basename='jusers')
+# router.register(r'likes', views.LikesViewSet, basename='likes')
+# router.register(r'feedback', views.FeedbackViewSet, basename='feedback')
+router.register(r'register', views.RegisterViewSet, basename='register'),
+
 
 urlpatterns = [
     path('', include(router.urls), name='api'),

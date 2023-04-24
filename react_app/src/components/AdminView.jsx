@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getAllUsers } from './postService'
-import UserItem from "./UserItem";
 import AdminMenu from './AdminMenu';
 
 const AdminView = (props) => {

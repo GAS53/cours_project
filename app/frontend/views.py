@@ -1,6 +1,3 @@
-from backend import models
-from authapp.models import BaseIdeinerUser
-
 from rest_framework import viewsets, status, filters
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -8,14 +5,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework import filters
 
 import frontend.serializers as fr_serializers
 import backend.models as bk_models
-from authapp.models import BaseIdeinerUser
-
-
 
 
 
@@ -65,7 +58,7 @@ class LoginViewSet(AbstractViewSet):
 
 class GetIdeaViewSet(AbstractViewSet):
     serializer_class = fr_serializers.GetIdeaSerializer
-    permission_classes = (IsAuthenticated,) # IsAuthenticated  исправить когда django примет токен
+    permission_classes = (IsAuthenticated,)
     http_method_names = ['get']
 
     def get_object(self):
@@ -76,7 +69,7 @@ class GetIdeaViewSet(AbstractViewSet):
 
 class PostIdeaViewSet(AbstractViewSet):
     serializer_class = fr_serializers.PostIdeaSerializer
-    permission_classes = (AllowAny,) # IsAuthenticated  исправить когда django примет токен
+    permission_classes = (AllowAny,)
     http_method_names = ['post']
 
     
@@ -90,7 +83,7 @@ class PostIdeaViewSet(AbstractViewSet):
 
 class JoinToIdea(AbstractViewSet):
     serializer_class = fr_serializers.JoinedUserSerializer
-    permission_classes = (AllowAny,)   # IsAuthenticated  исправить когда django примет токен
+    permission_classes = (AllowAny,)
     http_method_names = ['post']
 
 
@@ -109,8 +102,8 @@ class JoinToIdea(AbstractViewSet):
 
 
 class LikesViewSet(AbstractViewSet):
-    http_method_names = ('post') # , 'get', 'put', 'delete'
-    permission_classes = (AllowAny,)  # UserPermission
+    http_method_names = ('post')
+    permission_classes = (AllowAny,)
     serializer_class = fr_serializers.LikesSerializer
     
     def create(self, request, *args, **kwargs):
@@ -124,56 +117,6 @@ class LikesViewSet(AbstractViewSet):
                 serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class UserViewSet(AbstractViewSet):
-    http_method_names = ('patch', 'get')
-    permission_classes = (AllowAny,) #  IsAuthenticated вернуть после тестироваиня
-    serializer_class = fr_serializers.UserSerializer
-
-    def get_queryset(self):
-        if self.request.user.is_superuser:
-            return BaseIdeinerUser.objects.all()
-        return BaseIdeinerUser.objects.exclude(is_superuser=True)
-    
-    def get_object(self):
-        obj = BaseIdeinerUser.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-
 
 
 
@@ -212,52 +155,10 @@ class RegisterViewSet(viewsets.ViewSet):
 
 
 
-class UserPermission(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.user.is_anonymous:
-            return request.method in SAFE_METHODS
-        if view.basename in ["post"]:
-            return bool(request.user and request.user.is_authenticated)
-        return False
-    
-    def has_permission(self, request, view):
-        if view.basename in ["post"]:
-            if request.user.is_anonymous:
-                return request.method in SAFE_METHODS
-            return bool(request.user and request.user.is_authenticated)
-        return False
-
-
-class IdeaViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')
-    permission_classes = (AllowAny,)  # UserPermission
-    serializer_class = fr_serializers.IdeaSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def get_queryset(self):
-        return bk_models.Idea.objects.all() 
-        
-    def get_object(self):
-        obj = bk_models.Idea.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def validate_post(self, value):
-        if self.instance:
-            return self.instance.post
-        return value
-
-
-
 
 class NewRubricViewSet(AbstractViewSet):
     http_method_names = ('post',)
-    permission_classes = (UserPermission,)  # UserPermission !!!!!!!!!!!
+    permission_classes = (IsAuthenticated,)
     serializer_class = fr_serializers.RubricSerializer
 
 
@@ -282,106 +183,12 @@ class NewRubricViewSet(AbstractViewSet):
 
 class AllRubricsViewSet(AbstractViewSet):
     http_method_names = ('get',)
-    permission_classes = (AllowAny,)  # UserPermission !!!!!!!!!!!
+    permission_classes = (IsAuthenticated,)
     serializer_class = fr_serializers.RubricSerializer
 
 
     def get_queryset(self):
         return bk_models.Rubric.objects.all()
 
-
-
-
-
-
-
-
-
-
-
-class RubricViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')
-    permission_classes = (AllowAny,)  # UserPermission
-    serializer_class = fr_serializers.RubricSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def get_queryset(self):
-        return bk_models.Rubric.objects.all() 
-        
-    def get_object(self):
-        obj = bk_models.Rubric.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-    
-    def validate_rubric(self, value):
-        if self.instance:
-            return self.instance.rubric
-        return value
-
-
-
-class FeedbackViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')
-    permission_classes = (AllowAny,)  # UserPermission
-    serializer_class = fr_serializers.FeedbackSerializer
-
-    def get_queryset(self):
-        return models.Feedback.objects.all()  # временно
-        # if self.request.user.is_superuser: 
-        #     return models.Feedback.objects.all()
-        # print('self.kwargs')
-        # print(self.kwargs)
-        # idea_pk = self.kwargs['public_id']
-        # if idea_pk is None:
-        #     return Http404
-        # queryset = models.Feedback.objects.filter(post__public_id=idea_pk)
-        # return queryset
-    
-    def get_object(self):
-        obj = models.Feedback.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def validate_post(self, value):
-        if self.instance:
-            return self.instance.post
-        return value
-
-
-
-class JoinedUserViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get', 'put', 'delete')
-    permission_classes = (AllowAny,)  # UserPermission
-    serializer_class =  fr_serializers.JoinedUserSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def get_queryset(self):
-        return bk_models.JoinedUser.objects.all() 
-        
-    def get_object(self):
-        obj = bk_models.JoinedUser.objects.get_object_by_public_id(self.kwargs['pk'])
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def validate_post(self, value):
-        if self.instance:
-            return self.instance.post
-        return value
 
 

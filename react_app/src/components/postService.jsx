@@ -18,6 +18,9 @@ function getConfig(is_auth=true){
         "Content-Type": "application/json" }
     if (is_auth) {
         const auth = loadAuth()
+        console.log('auth')
+        console.log(auth)
+        console.log(auth.access)
         headers['Authorization'] = `Bearer ${auth.access}`
 
     }
@@ -48,7 +51,9 @@ function connectToIdea(id) {
     const data = { 
         idea: id,
         user: auth.id }
-    return axiosService.post('join/', data, getConfig(true))
+    console.log('getConfig()')
+    console.log(getConfig())
+    return axiosService.post('join/', data, getConfig())
 } 
 
 function createRubric(form){
@@ -90,7 +95,7 @@ function logIn(data) {
 }
 
 function LikeIdea(data) {
-    return axiosService.post('like/', data)
+    return axiosService.post('like/', data, getConfig())
 }
 
 const getAllUsers = () => {
@@ -99,7 +104,6 @@ const getAllUsers = () => {
 
 function togleStatus(id, status) {
     console.log("id\n", id)
-    const auth = loadAuth()
     const data = { 
         is_active: !status }
     return axiosService.patch(`users/${id}/`, data, getConfig(true))

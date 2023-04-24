@@ -59,6 +59,7 @@ function OneIdea() {
                         alert(`ошибка при добавлении лайка ${error.message}`)}})
     }}
 
+
     if (oneIdea.joinedUser===undefined) {
         return (<dvi><h3>Страница загружается</h3></dvi>)
     } else {
@@ -73,11 +74,11 @@ function OneIdea() {
                                     
                                 </div>
 
-                                <div className="col" style={{minWidth: '340px'}}>
+                                <div className="col" style={{minWidth: '440px'}}>
 
                                     <div className="container">
                                         <div className="row justify-content-center align-items-center g-2">
-                                            <div className="col-4">
+                                            <div className="col">
                                                 <h4 className="card-title text-center">
                                                     <strong>{oneIdea.title}</strong>
 
@@ -86,16 +87,6 @@ function OneIdea() {
                                         </div>
 
                                         <div className="row g-1">
-
-                                            <div className="col-4 my-auto">
-                                                <Link className="nameLink" to='/' >idea</Link>
-                                            </div>
-
-
-
-                                            <div className="col-1 my-auto">
-                                                <small className="text-muted">(1)</small>
-                                            </div>
                                         
                                             <div className="row justify-content-center align-items-center g-2">
                                                 <div className="col">
@@ -127,7 +118,7 @@ function OneIdea() {
                                                 
                                                     <div className="mt-2 d-grid gap-2">
                                                         <button type="button" onClick={connectHandler} className="btn mainButton">
-                                                        { oneIdea.joinedUser.indexOf(myId) ?  <p>Выйти из команды</p>  : <p>Вступить в команду</p>  }
+                                                        { <p>Войти/выйти из команды</p> }
                                                         </button>
                                                     </div>
                                                 <div className="mt-2 d-grid gap-2">

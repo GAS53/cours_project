@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react"
-import axios from "axios";
-import { Link, Outlet } from "react-router-dom";
+import { Link} from "react-router-dom";
 
-import Filter from './Filter'
+
 import Idea from "./ViewIdeaInMain";
 import { getAll } from "./postService";
 
@@ -22,7 +21,7 @@ function Main() {
     return (
         <div className="container-md mt-5 idea-list">
             <div className="row justify-content-center align-items-top">
-                <Filter val={ideas}/>
+                
                     <div className="col">
                     
                         {ideas.map(idea =>

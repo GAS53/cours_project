@@ -2,12 +2,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import React from "react"
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { logout, getAuth } from '../components/postService'
 
 const MenuDropdown = () => {
     const user = getAuth()
-    const navigate = useNavigate();
     
     return (
         <div>

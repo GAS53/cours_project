@@ -60,10 +60,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
  
-    # 'django.middleware.common.CommonMiddleware',# удалить на проде CORS
+   
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',# удалить на проде CORS
+    # 'django.middleware.common.CommonMiddleware',# удалить на продеe CORS
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

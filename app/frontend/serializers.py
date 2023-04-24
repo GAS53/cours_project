@@ -13,8 +13,6 @@ from django.conf import settings
 from backend import models as backend
 
 
-# абстрактный базовый сериализатор
-
 class AbstractSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True, format='hex')
     created = serializers.DateTimeField(read_only=True)
@@ -61,34 +59,16 @@ class UserSerializer(AbstractSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-
-        # if not representation['avatar']:
-        #     representation['avatar'] = settings.DEFAULT_AUTO_FIELD
-        #     return representation
-        # if settings.DEBUG: # debug enabled for dev
-        #     request = self.context.get('request')
-        #     representation['avatar'] = request.build_absolute_uri(representation['avatar'])
         return representation
 
 class RubricSerializer(AbstractSerializer):
-    '''вложенные методы не проверены'''
     class Meta:
         model = backend.Rubric
         fields =  ['id', 'rubirc_name']
 
-    # def to_representation(self, instance):
-    #     rep = super().to_representation(instance)
-    #     return rep
-    
-    # def update(self, instance, validated_data):
-    #     if not instance.edited:
-    #         validated_data['edited'] = True
-    #     instance = super().update(instance,  validated_data)
-    #     return instance
 
-class JoinedUserSerializer(AbstractSerializer):
-    
-    
+
+class JoinedUserSerializer(AbstractSerializer): 
     class Meta:
         model = backend.JoinedUser
         fields = '__all__' # ['id', 'idea', 'user']
@@ -153,19 +133,6 @@ class PostIdeaSerializer(AbstractSerializer):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -206,11 +173,7 @@ class RegisterSerializer(UserSerializer):
 
 
 
-
-
-
-# сериализаторы основных таблиц
-from backend.models import Idea, Rubric
+from backend.models import Rubric
 
 class IdeaSerializer(AbstractSerializer):
     autor = UserSerializer()

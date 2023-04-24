@@ -8,7 +8,7 @@ const Idea = (props) => {
             <div className="card-body">
                 <div className="row g-3 justify-content-left">
 
-                    <div className="col-sm-2 card-image d-none d-md-block my-auto">Card title</div>
+                    <div className="col-sm-2 card-image d-none d-md-block my-auto"></div>
 
                                 <div className="col" style={{minWidth: "340px"}}>
 
@@ -19,9 +19,6 @@ const Idea = (props) => {
 
                                         <div className="row g-1">
 
-                                            {/* <div className="col-4 my-auto">
-                                                <a className="nameLink" href="#">props.created_at</a>
-                                            </div> */}
 
                                             <div className="col my-auto">
                                                 <div className="progress">

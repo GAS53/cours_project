@@ -43,9 +43,6 @@ const AdminMenu = () => {
 
                 </ol>
             </Tab>
-            <Tab eventKey="posts" title="Посты">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, pariatur suscipit quibusdam, mollitia distinctio ea qui facilis vitae perspiciatis, accusantium necessitatibus commodi sint ad. Natus molestias nulla soluta eligendi tempore?</p>
-            </Tab>
         </Tabs>
     );
 }
